@@ -1,5 +1,6 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
+#include "lemlib/asset.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "lemlib-tarball/api.hpp"
 #include "pros/misc.h"
@@ -138,11 +139,16 @@ void competition_initialize() {}
 ASSET(Leftquals_txt); // '.' replaced with "_" to make c++ happy
 ASSET(Leftelims_txt);
 ASSET(sawp_txt);
+ASSET(x)
 // Create the decoder
 lemlib_tarball::Decoder leftqualsdecode(Leftquals_txt);
 lemlib_tarball::Decoder leftelimsdecode(Leftelims_txt);
 lemlib_tarball::Decoder sawpdecode(sawp_txt);
 //add staring pos
+void linpid(){
+    chassis.setPose(0, 0, 0);
+    chassis.follow(linpid_txt, 15, 2000)
+}
 void leftquals(){
 chassis.setPose(-46.665, 14.467, 90.1);        
 	upperintake.move(127);
