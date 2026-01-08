@@ -210,53 +210,25 @@ void angpid(){
 //     chassis.waitUntilDone();
 // }
 void sawp(){
-    chassis.setPose(lemlib::Pose(-60.188, -18.5, 180));
+    chassis.setPose(lemlib::Pose(0, 0, 0));
 	// upperintake.move(127);
 	// lowerintake.move(-127);
 	// tongue.set_value(true);
-// matchload
-// matchload
-
-chassis.moveToPose(-60.188, -25.615, 159.9, 2000);
+chassis.moveToPose(-10, 33, 90, 2000);
 chassis.waitUntilDone();
-chassis.moveToPose(-55.869, -37.236, 138.6, 2000);
+tongue.set_value(true);
+	upperintake.move(127);
+	lowerintake.move(-127);
+chassis.moveToPose(6, 32, 90, 2000, {.maxSpeed = 80});
 chassis.waitUntilDone();
-chassis.moveToPose(-47.094, -47.781, 270, 2000);
+pros::delay(1000);
+chassis.moveToPose(-35, 32, 90, 2000, {.forwards = false, .maxSpeed = 110});
 chassis.waitUntilDone();
-chassis.moveToPose(-54.392, -47.567, 271.5, 2000);
-chassis.waitUntilDone();
-
-// scoring 1st goal
-
-chassis.moveToPose(-31.21, -47.352, 267.5, 2000);
-chassis.waitUntilDone();
-
-// 3 ball 1st
-
-chassis.moveToPose(-26.273, -27.604, 30.7, 2000);
-chassis.waitUntilDone();
-
-// 3 ball 2nd
-
-chassis.moveToPose(-21.766, 20.692, 313.939, 2000);
-chassis.waitUntilDone();
-
-// Scoring Mid Goal
-
-chassis.moveToPose(-14.253, 13.824, 316.8, 2000);
-chassis.waitUntilDone();
-
-// matchload 2
-
-chassis.moveToPose(-54.786, 46.752, 270.3, 2000);
-chassis.waitUntilDone();
-
-// long goal
-
-chassis.moveToPose(-31.196, 47.091, 268.4, 2000);
-chassis.waitUntilDone();
-
-
+lowerintake.move(127);
+pros::delay(250);
+lowerintake.move(-127);
+upperintake.move(-127);
+pros::delay(1000);
 }
 
 /**
