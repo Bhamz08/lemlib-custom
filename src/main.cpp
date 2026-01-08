@@ -5,6 +5,7 @@
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "lemlib-tarball/api.hpp"
 #include "pros/misc.h"
+#include "pros/motors.h"
 #include "pros/motors.hpp"
 #include "robodash/api.h"
 
@@ -42,29 +43,26 @@ lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
                               10, // 10 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 4" omnis
                               450, // drivetrain rpm is 360
-                              2 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                            2 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
-
-lemlib::ControllerSettings lateral_controller(7.6, // proportional gain (kP)
+ lemlib::ControllerSettings lateral_controller(5.8, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              24, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
+                                              5, // derivative gain (kD)
+                                              0, // anti windup
+                                              3, // small error range, in inches
+                                              250, // small error range timeout, in milliseconds
+                                              5, // large error range, in inches
                                               500, // large error range timeout, in milliseconds
-                                              20 // maximum acceleration (slew)
-
-); 
-
+                                              0 // maximum acceleration (slew)
+);
 // angular motion controller
 lemlib::ControllerSettings angularController(3.16, // proportional gain (kP)
-                                             0.1, // integral gain (kI)
+                                             0, // integral gain (kI)
                                              20, // derivative gain (kD)
-                                             3, // anti windup
+                                             5, // anti windup
                                              1, // small error range, in degrees
                                              100, // small error range timeout, in milliseconds
-                                             3, // large error range, in degrees
+                                             5, // large error range, in degrees
                                              500, // large error range timeout, in milliseconds
                                              0 // maximum acceleration (slew)
 );
@@ -128,20 +126,21 @@ void disabled() {}
 void competition_initialize() {}
 
 // get a path used for pure pursuit
-// this needs to be put outside a function
-ASSET(Leftquals_txt); // '.' replaced with "_" to make c++ happy
-ASSET(LeftElims_txt);
-ASSET(sawp_txt);
-ASSET(linpid_txt);
-// Create the decoder
-lemlib_tarball::Decoder leftqualsdecode(Leftquals_txt);
-lemlib_tarball::Decoder leftelimsdecode(LeftElims_txt);
-lemlib_tarball::Decoder sawpdecode(sawp_txt);
+// // this needs to be put outside a function
+// ASSET(Leftquals_txt); // '.' replaced with "_" to make c++ happy
+// ASSET(LeftElims_txt);
+// ASSET(sawp_txt);
+// ASSET(linpid_txt);
+// // Create the decoder
+// lemlib_tarball::Decoder leftqualsdecode(Leftquals_txt);
+// lemlib_tarball::Decoder leftelimsdecode(LeftElims_txt);
+// lemlib_tarball::Decoder sawpdecode(sawp_txt);
 //add staring pos
 void linpid(){
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
     chassis.setPose(lemlib::Pose(-48, 24, 180));
-   chassis.moveToPoint(-48, 0, 2000);
-    chassis.follow(linpid_txt, 15, 2000);
+    chassis.moveToPoint(-48, -24, 2000);
+    // chassis.follow(linpid_txt, 3, 2000);
 chassis.waitUntilDone();
 
 }
@@ -150,113 +149,114 @@ void angpid(){
     chassis.turnToHeading(90, 2000);
     chassis.waitUntilDone();
 }
-void leftquals(){
-    chassis.setPose(lemlib::Pose(-46.665, 14.467, 90.1));        
-	upperintake.move(127);
-            lowerintake.move(-127);
-	chassis.follow(leftqualsdecode["Drive to the 3 blocks"], 15, 2000);
-	chassis.waitUntil(20);
-	tongue.set_value(true);
-	chassis.waitUntilDone();
-	chassis.turnToHeading(137, 2000);
-	chassis.follow(leftqualsdecode["move to long goal"], 15, 2000, false);
-	chassis.waitUntilDone();	
-		        upperintake.move(-80);
-			pros::delay(500);
-			upperintake.move(127);
-	chassis.turnToHeading(300, 2000);
-	chassis.follow(leftqualsdecode["matchload"], 15, 2000, true);
-	chassis.waitUntilDone();
-	pros::delay(1000);
-	chassis.turnToHeading(270, 2000);
-	chassis.follow(leftqualsdecode["score long goal"], 15, 2000, false);
-	chassis.waitUntilDone();
-	lowerintake.move(127);
-	pros::delay(250);
-	lowerintake.move(-127);
-	upperintake.move(-127);
-	pros::delay(1000);
-	chassis.turnToHeading(209.4, 2000);
-	chassis.follow(leftqualsdecode["descorefwd"], 15, 2000);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(350.1, 500);
-    chassis.follow(leftqualsdecode["descorerev"], 15, 2000, false);
-}
+// void leftquals(){
+//     chassis.setPose(lemlib::Pose(-46.665, 14.467, 90.1));        
+// 	upperintake.move(127);
+//             lowerintake.move(-127);
+// 	chassis.follow(leftqualsdecode["Drive to the 3 blocks"], 15, 2000);
+// 	chassis.waitUntil(20);
+// 	tongue.set_value(true);
+// 	chassis.waitUntilDone();
+// 	chassis.turnToHeading(137, 2000);
+// 	chassis.follow(leftqualsdecode["move to long goal"], 15, 2000, false);
+// 	chassis.waitUntilDone();	
+// 		        upperintake.move(-80);
+// 			pros::delay(500);
+// 			upperintake.move(127);
+// 	chassis.turnToHeading(300, 2000);
+// 	chassis.follow(leftqualsdecode["matchload"], 15, 2000, true);
+// 	chassis.waitUntilDone();
+// 	pros::delay(1000);
+// 	chassis.turnToHeading(270, 2000);
+// 	chassis.follow(leftqualsdecode["score long goal"], 15, 2000, false);
+// 	chassis.waitUntilDone();
+// 	lowerintake.move(127);
+// 	pros::delay(250);
+// 	lowerintake.move(-127);
+// 	upperintake.move(-127);
+// 	pros::delay(1000);
+// 	chassis.turnToHeading(209.4, 2000);
+// 	chassis.follow(leftqualsdecode["descorefwd"], 15, 2000);
+//     chassis.waitUntilDone();
+//     chassis.turnToHeading(350.1, 500);
+//     chassis.follow(leftqualsdecode["descorerev"], 15, 2000, false);
+// }
 
-void LeftElims(){
-    chassis.setPose(lemlib::Pose(-46.714, 13.681, 90));
-	     upperintake.move(127);
-         lowerintake.move(-127);
-chassis.follow(leftelimsdecode["3 Balls"], 15, 2000);
-	chassis.waitUntil(20);
-	tongue.set_value(true);
-	chassis.waitUntilDone();
-	chassis.turnToHeading(315.4, 2000);
-	chassis.follow(leftelimsdecode["Matchload"], 15, 2000);
-	chassis.waitUntilDone();
-	pros::delay(1000);
-	chassis.turnToHeading(270, 2000);
-	chassis.follow(leftelimsdecode["Long goal scoring"], 15, 2000, false);
-	chassis.waitUntilDone();
-	lowerintake.move(127);
-	pros::delay(250);
-	lowerintake.move(-127);
-	upperintake.move(-127);
-	pros::delay(1000);
-	chassis.turnToHeading(169.8, 2000);
-	chassis.follow(leftelimsdecode["descorefwd"], 15, 2000);
-    chassis.waitUntilDone();
-    chassis.turnToHeading(326.5, 500);
-    chassis.follow(leftelimsdecode["descorerev"], 15, 2000, false);
-    chassis.waitUntilDone();
-}
+// void LeftElims(){
+//     chassis.setPose(lemlib::Pose(-46.714, 13.681, 90));
+// 	     upperintake.move(127);
+//          lowerintake.move(-127);
+// chassis.follow(leftelimsdecode["3 Balls"], 15, 2000);
+// 	chassis.waitUntil(20);
+// 	tongue.set_value(true);
+// 	chassis.waitUntilDone();
+// 	chassis.turnToHeading(315.4, 2000);
+// 	chassis.follow(leftelimsdecode["Matchload"], 15, 2000);
+// 	chassis.waitUntilDone();
+// 	pros::delay(1000);
+// 	chassis.turnToHeading(270, 2000);
+// 	chassis.follow(leftelimsdecode["Long goal scoring"], 15, 2000, false);
+// 	chassis.waitUntilDone();
+// 	lowerintake.move(127);
+// 	pros::delay(250);
+// 	lowerintake.move(-127);
+// 	upperintake.move(-127);
+// 	pros::delay(1000);
+// 	chassis.turnToHeading(169.8, 2000);
+// 	chassis.follow(leftelimsdecode["descorefwd"], 15, 2000);
+//     chassis.waitUntilDone();
+//     chassis.turnToHeading(326.5, 500);
+//     chassis.follow(leftelimsdecode["descorerev"], 15, 2000, false);
+//     chassis.waitUntilDone();
+// }
 void sawp(){
     chassis.setPose(lemlib::Pose(-60.188, -18.5, 180));
-	upperintake.move(127);
-	lowerintake.move(-127);
-	tongue.set_value(true);
-chassis.follow(sawpdecode["matchload"], 15, 2000);
+	// upperintake.move(127);
+	// lowerintake.move(-127);
+	// tongue.set_value(true);
+// matchload
+// matchload
+
+chassis.moveToPose(-60.188, -25.615, 159.9, 2000);
 chassis.waitUntilDone();
-pros::delay(500);
-chassis.turnToHeading(270, 2000);
-chassis.follow(sawpdecode["scoring 1st goal"], 15, 2000, false);
+chassis.moveToPose(-55.869, -37.236, 138.6, 2000);
 chassis.waitUntilDone();
-lowerintake.move(127);
-pros::delay(250);
-lowerintake.move(-127);
-upperintake.move(-127);
-pros::delay(1000);
-tongue.set_value(false);
-lowerintake.move(-127);
-upperintake.move(127);
-chassis.turnToHeading(268.3, 2000);
-chassis.follow(sawpdecode["3 ball 1st"], 15, 2000);
+chassis.moveToPose(-47.094, -47.781, 270, 2000);
 chassis.waitUntilDone();
-tongue.set_value(true);
-chassis.turnToHeading(32.1, 2000);
-chassis.follow(sawpdecode["3 ball 2nd"], 15, 2000);
-chassis.waitUntil(5);
-tongue.set_value(false);
+chassis.moveToPose(-54.392, -47.567, 271.5, 2000);
 chassis.waitUntilDone();
-tongue.set_value(true);
-chassis.turnToHeading(322.6, 2000);
-chassis.follow(sawpdecode["Scoring Mid Goal"], 15, 2000, false);
+
+// scoring 1st goal
+
+chassis.moveToPose(-31.21, -47.352, 267.5, 2000);
 chassis.waitUntilDone();
-upperintake.move(-80);
-pros::delay(250);
-upperintake.move(127);
-chassis.turnToHeading(318, 2000);
-chassis.follow(sawpdecode["matchload 2"], 15, 2000);
+
+// 3 ball 1st
+
+chassis.moveToPose(-26.273, -27.604, 30.7, 2000);
 chassis.waitUntilDone();
-	pros::delay(250);
-chassis.turnToHeading(270, 2000);
-chassis.follow(sawpdecode["long goal"], 15, 2000, false);
+
+// 3 ball 2nd
+
+chassis.moveToPose(-21.766, 20.692, 313.939, 2000);
 chassis.waitUntilDone();
-lowerintake.move(127);
-pros::delay(250);
-lowerintake.move(-127);
-upperintake.move(-127);
-pros::delay(1000);
+
+// Scoring Mid Goal
+
+chassis.moveToPose(-14.253, 13.824, 316.8, 2000);
+chassis.waitUntilDone();
+
+// matchload 2
+
+chassis.moveToPose(-54.786, 46.752, 270.3, 2000);
+chassis.waitUntilDone();
+
+// long goal
+
+chassis.moveToPose(-31.196, 47.091, 268.4, 2000);
+chassis.waitUntilDone();
+
+
 }
 
 /**
@@ -286,6 +286,7 @@ void opcontrol() {
 	bool wing_state = false;
 	bool hood_state = false;
     // loop to continuously update motors
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
     while (true) {
         // get joystick positions
         int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
