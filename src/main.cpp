@@ -131,12 +131,12 @@ void competition_initialize() {}
 // this needs to be put outside a function
 //ASSET(Leftquals_txt); // '.' replaced with "_" to make c++ happy
 // ASSET(LeftElims_txt);
-// ASSET(sawp_txt);
+ASSET(sawp_txt);
 ASSET(linpid_txt);
 // Create the decoder
 // lemlib_tarball::Decoder leftqualsdecode(Leftquals_txt);
 // lemlib_tarball::Decoder leftelimsdecode(LeftElims_txt);
-// lemlib_tarball::Decoder sawpdecode(sawp_txt);
+lemlib_tarball::Decoder sawpdecode(sawp_txt);
 //add staring pos
 void linpid(){
     chassis.setPose(lemlib::Pose(-48, 24, 180));
@@ -203,54 +203,54 @@ void angpid(){
 // 	chassis.turnToHeading(169.8, 2000);
 // 	chassis.follow(leftelimsdecode["Descore"], 15, 2000);
 // }
-// void sawp(){
-//     chassis.setPose(lemlib::Pose(-49.026, -16.442, 179.2));
-// 	upperintake.move(127);
-// 	lowerintake.move(-127);
-// 	tongue.set_value(true);
-// chassis.follow(sawpdecode["matchload"], 15, 2000);
-// chassis.waitUntilDone();
-// pros::delay(500);
-// chassis.turnToHeading(270, 2000);
-// chassis.follow(sawpdecode["scoring 1st goal"], 15, 2000, false);
-// chassis.waitUntilDone();
-// lowerintake.move(127);
-// pros::delay(250);
-// lowerintake.move(-127);
-// upperintake.move(-127);
-// pros::delay(1000);
-// tongue.set_value(false);
-// lowerintake.move(-127);
-// upperintake.move(127);
-// chassis.turnToHeading(268.3, 2000);
-// chassis.follow(sawpdecode["3 ball 1st"], 15, 2000);
-// chassis.waitUntilDone();
-// tongue.set_value(true);
-// chassis.turnToHeading(32.1, 2000);
-// chassis.follow(sawpdecode["3 ball 2nd"], 15, 2000);
-// chassis.waitUntil(5);
-// tongue.set_value(false);
-// chassis.waitUntilDone();
-// tongue.set_value(true);
-// chassis.turnToHeading(322.6, 2000);
-// chassis.follow(sawpdecode["Scoring Mid Goal"], 15, 2000, false);
-// chassis.waitUntilDone();
-// upperintake.move(-80);
-// pros::delay(250);
-// upperintake.move(127);
-// chassis.turnToHeading(318, 2000);
-// chassis.follow(sawpdecode["matchload 2"], 15, 2000);
-// chassis.waitUntilDone();
-// 	pros::delay(250);
-// chassis.turnToHeading(270, 2000);
-// chassis.follow(sawpdecode["long goal"], 15, 2000, false);
-// chassis.waitUntilDone();
-// lowerintake.move(127);
-// pros::delay(250);
-// lowerintake.move(-127);
-// upperintake.move(-127);
-// pros::delay(1000);
-// }
+void sawp(){
+    chassis.setPose(lemlib::Pose(-60.188, -18.5, 180));
+	upperintake.move(127);
+	lowerintake.move(-127);
+	tongue.set_value(true);
+chassis.follow(sawpdecode["matchload"], 15, 2000);
+chassis.waitUntilDone();
+pros::delay(500);
+chassis.turnToHeading(270, 2000);
+chassis.follow(sawpdecode["scoring 1st goal"], 15, 2000, false);
+chassis.waitUntilDone();
+lowerintake.move(127);
+pros::delay(250);
+lowerintake.move(-127);
+upperintake.move(-127);
+pros::delay(1000);
+tongue.set_value(false);
+lowerintake.move(-127);
+upperintake.move(127);
+chassis.turnToHeading(268.3, 2000);
+chassis.follow(sawpdecode["3 ball 1st"], 15, 2000);
+chassis.waitUntilDone();
+tongue.set_value(true);
+chassis.turnToHeading(32.1, 2000);
+chassis.follow(sawpdecode["3 ball 2nd"], 15, 2000);
+chassis.waitUntil(5);
+tongue.set_value(false);
+chassis.waitUntilDone();
+tongue.set_value(true);
+chassis.turnToHeading(322.6, 2000);
+chassis.follow(sawpdecode["Scoring Mid Goal"], 15, 2000, false);
+chassis.waitUntilDone();
+upperintake.move(-80);
+pros::delay(250);
+upperintake.move(127);
+chassis.turnToHeading(318, 2000);
+chassis.follow(sawpdecode["matchload 2"], 15, 2000);
+chassis.waitUntilDone();
+	pros::delay(250);
+chassis.turnToHeading(270, 2000);
+chassis.follow(sawpdecode["long goal"], 15, 2000, false);
+chassis.waitUntilDone();
+lowerintake.move(127);
+pros::delay(250);
+lowerintake.move(-127);
+upperintake.move(-127);
+pros::delay(1000);
+}
 
 /**
  * Runs during auto
@@ -267,7 +267,7 @@ void angpid(){
  void autonomous() {
    //selector.run_auton();
 
-   linpid();
+   sawp();
 }
 
 /**
