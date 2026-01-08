@@ -207,7 +207,7 @@ chassis.follow(leftelimsdecode["3 Balls"], 15, 2000);
 	chassis.follow(leftelimsdecode["descorefwd"], 15, 2000);
     chassis.waitUntilDone();
     chassis.turnToHeading(326.5, 500);
-    chassis.follow(leftelimsdecode["descorerev"], 15, 2000, rev);
+    chassis.follow(leftelimsdecode["descorerev"], 15, 2000, false);
     chassis.waitUntilDone();
 }
 void sawp(){
