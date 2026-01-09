@@ -210,25 +210,54 @@ void angpid(){
 //     chassis.waitUntilDone();
 // }
 void sawp(){
-    chassis.setPose(lemlib::Pose(0, 0, 0));
-	// upperintake.move(127);
-	// lowerintake.move(-127);
-	// tongue.set_value(true);
-chassis.moveToPose(-10, 33, 90, 2000);
+chassis.setPose(lemlib::Pose(0, 0, 0));
+//matchload 1
+chassis.moveToPose(-10, 32, 90, 2000);
 chassis.waitUntilDone();
 tongue.set_value(true);
-	upperintake.move(127);
-	lowerintake.move(-127);
+upperintake.move(127);
+lowerintake.move(-127);
 chassis.moveToPose(6, 32, 90, 2000, {.maxSpeed = 80});
 chassis.waitUntilDone();
 pros::delay(1000);
+//long goal + score
 chassis.moveToPose(-35, 32, 90, 2000, {.forwards = false, .maxSpeed = 110});
 chassis.waitUntilDone();
+tongue.set_value(false);
 lowerintake.move(127);
-pros::delay(250);
+pros::delay(200);
 lowerintake.move(-127);
 upperintake.move(-127);
 pros::delay(1000);
+upperintake.move(127);
+//six balls in mid
+chassis.moveToPose(-37, 7, 180, 2000, {.maxSpeed = 80});
+chassis.waitUntilDone();
+chassis.moveToPose(-37, -39,  180, 2000, {.maxSpeed = 80});
+chassis.waitUntilDone();
+//going to mid goal + score
+chassis.moveToPose(-45, 30, 315, 2000, {.maxSpeed = 80});
+chassis.waitUntilDone();
+lowerintake.move(-127);
+upperintake.move(-127);
+pros::delay(400);
+upperintake.move(127);
+//matchload 2
+chassis.moveToPose(-10, -62, 90, 2000, {.maxSpeed = 80});
+chassis.waitUntilDone();
+tongue.set_value(true);
+chassis.moveToPose(6, -62, 90, 2000, {.maxSpeed = 80});
+chassis.waitUntilDone();
+pros::delay(1000);
+//long goal + score
+chassis.moveToPose(-35, 62, 90, 2000, {.forwards = false, .maxSpeed = 110});
+chassis.waitUntilDone();
+tongue.set_value(false);
+lowerintake.move(127);
+pros::delay(200);
+lowerintake.move(-127);
+upperintake.move(-127);
+
 }
 
 /**
