@@ -9,7 +9,7 @@
         "metadata": {
           "origin": "LemLib"
         },
-        "name": "LemLib",
+        "name": "Netanyahu",
         "py/object": "pros.conductor.templates.local_template.LocalTemplate",
         "supported_kernels": "^4.1.1",
         "system_files": [
