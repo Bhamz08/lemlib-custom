@@ -7,6 +7,7 @@
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/motors.hpp"
+#include "pros/rtos.hpp"
 #include "robodash/api.h"
 
 
@@ -90,7 +91,14 @@ lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
 // create the chassis
 lemlib::Chassis chassis(drivetrain, lateral_controller, angularController, sensors, &throttleCurve, &steerCurve);
 
-
+void cdrift(float lV, float rV, int timeout, bool cst) {
+        (cst == true) ? (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST), rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST)) : (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE), rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE));
+        leftMotors.move(lV);
+        rightMotors.move(rV);
+        pros::delay(timeout);
+        leftMotors.brake();
+        rightMotors.brake();
+}
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -99,19 +107,19 @@ lemlib::Chassis chassis(drivetrain, lateral_controller, angularController, senso
  */
 // initialize function. Runs on program startup
 void initialize() {
-    pros::lcd::initialize(); // initialize brain screen
+    //pros::lcd::initialize(); // initialize brain screen
     chassis.calibrate(); // calibrate sensors
     // print position to brain screen
-    pros::Task screen_task([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-            // delay to save resources
-            pros::delay(20);
-        }
-    });
+    // pros::Task screen_task([&]() {
+    //     while (true) {
+    //         // print robot location to the brain screen
+    //         pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+    //         pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+    //         pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+    //         // delay to save resources
+    //         pros::delay(20);
+    //     }
+    // });
 }
 
 
@@ -210,72 +218,168 @@ void angpid(){
 //     chassis.waitUntilDone();
 // }
 void sawp(){
-chassis.setPose(lemlib::Pose(0, 0, 0));
+chassis.setPose(0, 0, 0);
 //matchload 1
-chassis.moveToPose(-10, 32, 90, 2000);
+chassis.moveToPose(-10, 32, 90, 1500, {.lead = 0.5});
 chassis.waitUntilDone();
 tongue.set_value(true);
+pros::delay(100);
 upperintake.move(127);
 lowerintake.move(-127);
-chassis.moveToPose(6, 32, 90, 2000, {.maxSpeed = 80});
+chassis.moveToPose(8, 30, 90, 900, {.lead = 0.1, .maxSpeed = 127});
 chassis.waitUntilDone();
-pros::delay(1000);
+pros::delay(525);
 //long goal + score
-chassis.moveToPose(-35, 32, 90, 2000, {.forwards = false, .maxSpeed = 110});
+chassis.moveToPose(-35, 31, 90, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 90});
 chassis.waitUntilDone();
 tongue.set_value(false);
 lowerintake.move(127);
-pros::delay(200);
+pros::delay(150);
 lowerintake.move(-127);
 upperintake.move(-127);
-pros::delay(1000);
+pros::delay(1100);
 upperintake.move(127);
-//six balls in mid
-chassis.moveToPose(-37, 7, 180, 2000, {.maxSpeed = 80});
-chassis.waitUntilDone();
-chassis.moveToPose(-37, -39,  180, 2000, {.maxSpeed = 80});
-chassis.waitUntilDone();
-//going to mid goal + score
-chassis.moveToPose(-45, 30, 315, 2000, {.maxSpeed = 80});
-chassis.waitUntilDone();
-lowerintake.move(-127);
-upperintake.move(-127);
-pros::delay(400);
-upperintake.move(127);
-//matchload 2
-chassis.moveToPose(-10, -62, 90, 2000, {.maxSpeed = 80});
-chassis.waitUntilDone();
+chassis.moveToPoint(-20.26, 30.76, 700);
+chassis.turnToHeading(209.7, 650);
+//first 3 set
+chassis.moveToPoint(-32.65, 6.8, 800);
+chassis.waitUntil(16.5);
 tongue.set_value(true);
-chassis.moveToPose(6, -62, 90, 2000, {.maxSpeed = 80});
-chassis.waitUntilDone();
-pros::delay(1000);
-//long goal + score
-chassis.moveToPose(-35, 62, 90, 2000, {.forwards = false, .maxSpeed = 110});
+chassis.turnToHeading(180, 550);
+tongue.set_value(false);
+chassis.moveToPoint(-31, -41, 1200);
+chassis.waitUntil(28);
+tongue.set_value(true);
+chassis.turnToHeading(135.8, 550);
 chassis.waitUntilDone();
 tongue.set_value(false);
-lowerintake.move(127);
-pros::delay(200);
+chassis.moveToPose(-43.94, -25.1, 135.8, 900, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+chassis.waitUntilDone();
+hood.set_value(true);
 lowerintake.move(-127);
 upperintake.move(-127);
+pros::delay(370);
+upperintake.move(127);
+chassis.moveToPoint(-9.33, -62.91, 1350);
+chassis.turnToHeading(90, 700);
+hood.set_value(false);
+//-27.6, 63.3
+chassis.moveToPose(-28, -63.1, 90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 120});
+chassis.waitUntilDone();
+lowerintake.move(127);
+pros::delay(100);
+lowerintake.move(-127);
+upperintake.move(-127);
+}
+
+void elims(){
+    //go to mid 3 and tongue
+    chassis.setPose(0, 0, 0);
+    upperintake.move(127);
+    lowerintake.move(-127);
+    chassis.moveToPose(7.41, 23.92, 38.63, 1000, {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
+    chassis.waitUntil(19);
+    tongue.set_value(true);
+    chassis.turnToHeading(127, 700, {.maxSpeed=127});
+    //go to matchload pos
+    chassis.moveToPoint(31.95, -2.24, 900, {.maxSpeed = 127});
+    chassis.turnToHeading(180, 600);
+    //enter matchload
+    chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed=127});
+    chassis.waitUntilDone();
+    pros::delay(600);
+    //go to goal and score
+    chassis.moveToPose(33, 18, 180, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+    chassis.waitUntil(15.5);
+    tongue.set_value(false);
+    chassis.waitUntilDone();
+    lowerintake.move(127);
+    pros::delay(250);
+    lowerintake.move(-127);
+    upperintake.move(-127);
+    pros::delay(2000);
+    upperintake.move(127);
+    //goes to wing pos and turns
+    // chassis.moveToPoint(32.7, 5, 800, {.maxSpeed=127});
+    // chassis.turnToHeading(302, 600, {.maxSpeed=127});
+    // chassis.waitUntil(5);
+    lowerintake.move(0);
+    upperintake.move(0);
+    chassis.moveToPose(23.7, 7.2, 302, 1000, {.maxSpeed=127});
+    chassis.turnToHeading(0, 600);
+    //go into wing
+    chassis.moveToPoint(23.7, 28, 1000, {.maxSpeed=127});
+    chassis.waitUntilDone();
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+
+    
+}
+
+void quals(){
+    //go to matchload and matchload
+    chassis.setPose(0, 0, 0);
+    upperintake.move(127);
+    lowerintake.move(-127);
+    hood.set_value(false);
+    chassis.moveToPoint(2, 32, 1200, {.maxSpeed = 127});
+    chassis.turnToHeading(-90, 700);
+    tongue.set_value(true);;
+    chassis.moveToPose(-11, 28, -90, 800, {.lead = 0.1, .maxSpeed = 127 });
+    chassis.waitUntilDone();
+    pros::delay(450);
+    //go to long goal
+    chassis.moveToPose(21.5, 28, -90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 85});
+    chassis.waitUntilDone();
+    lowerintake.move(-127);
+    upperintake.move(-127);
+    pros::delay(900);
+    tongue.set_value(false);
+    //go to middle 3
+    chassis.moveToPoint(11, 28, 700, {.maxSpeed = 127});
+    chassis.turnToHeading(-213, 600);
+    upperintake.move(127);
+    //tongue
+    chassis.moveToPoint(29.3, 8, 1200, {.maxSpeed = 127});
+    chassis.waitUntil(22);
+    tongue.set_value(true);
+    chassis.waitUntilDone();
+    chassis.turnToHeading(-47, 800, {.maxSpeed = 127});
+    //go to mid goal and score
+    chassis.moveToPose(46.5, -17, -47, 1000, {.forwards = false, .lead = 0.1,  .maxSpeed = 127});
+    chassis.waitUntilDone();
+    lowerintake.move(-110);
+    upperintake.move(-95);
+    hood.set_value(true);
+    pros::delay(650);
+    hood.set_value(false);
+    tongue.set_value(false);
+    //go to wing pos
+    chassis.moveToPoint(23.27, 9.7, 1350, {.maxSpeed = 127});
+    chassis.waitUntilDone();
+    chassis.turnToHeading(-95, 700);
+    // chassis.moveToPoint(47, 9.75, 800, {.forwards = false, .maxSpeed = 127});
+    // chassis.waitUntilDone();
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 
 }
+
+
 
 /**
  * Runs during auto
  *
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
-// 	rd::Selector selector({
-//     {"Left Quals", leftquals},
-//      {"Left Eliminations", LeftElims},
-// 	{"SAWP", sawp},
-//     // {"Good auton", good_auton},
-// });
+	rd::Selector selector({
+    {"SAWP", sawp},
+     {"Eliminations", elims},
+     {"Quals 4+3", quals}
+});
 
  void autonomous() {
-   //selector.run_auton();
+   selector.run_auton();
 
-   sawp();
+   
 }
 
 /**
