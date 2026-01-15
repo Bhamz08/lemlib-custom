@@ -109,8 +109,7 @@ void cdrift(float lV, float rV, int timeout, bool cst) {
 void initialize() {
     //pros::lcd::initialize(); // initialize brain screen
     chassis.calibrate();
-        wing.set_value(true);
-    wing.set_value(false); // calibrate sensors
+ // calibrate sensors
     // print position to brain screen
     // pros::Task screen_task([&]() {
     //     while (true) {
@@ -381,7 +380,9 @@ void quals(){
 });
 
  void autonomous() {
-   selector.run_auton();
+    wing.set_value(true);
+    wing.set_value(false);
+    selector.run_auton();
 
    
 }
