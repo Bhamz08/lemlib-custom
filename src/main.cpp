@@ -108,7 +108,9 @@ void cdrift(float lV, float rV, int timeout, bool cst) {
 // initialize function. Runs on program startup
 void initialize() {
     //pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate(); // calibrate sensors
+    chassis.calibrate();
+        wing.set_value(true);
+    wing.set_value(false); // calibrate sensors
     // print position to brain screen
     // pros::Task screen_task([&]() {
     //     while (true) {
@@ -277,6 +279,8 @@ void elims(){
     chassis.setPose(0, 0, 0);
     upperintake.move(127);
     lowerintake.move(-127);
+    wing.set_value(true);
+    wing.set_value(false);
     chassis.moveToPose(7.41, 23.92, 38.63, 1000, {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
     chassis.waitUntil(19);
     tongue.set_value(true);
