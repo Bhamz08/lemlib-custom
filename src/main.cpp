@@ -442,11 +442,6 @@ void opcontrol() {
 
 
 
-        // // //move hood manually
-        // hood.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT));
-
-
-
 		// delay to save resources
         pros::delay(10);
     }
