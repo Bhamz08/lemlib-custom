@@ -249,9 +249,7 @@ void elims(){
     //go into wing
     chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed=127});
     chassis.waitUntilDone();
-    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-
-    
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
 }
 
 void quals(){
