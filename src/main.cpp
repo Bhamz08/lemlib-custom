@@ -219,14 +219,14 @@ void elims(){
     chassis.moveToPose(7.41, 23.92, 38.63, 1000, {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
     chassis.waitUntil(18.9);
     tongue.set_value(true);
-    chassis.turnToHeading(127, 700, {.maxSpeed=127});
+    chassis.turnToHeading(127, 600, {.maxSpeed=127});
     //go to matchload pos
     chassis.moveToPoint(31.95, -2.24, 900, {.maxSpeed = 127});
     chassis.turnToHeading(180, 600);
     //enter matchload
     chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed=127});
     chassis.waitUntilDone();
-    pros::delay(500);
+    pros::delay(450);
     //go to goal and score
     chassis.moveToPose(33.5, 20, 180, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
     chassis.waitUntil(15.5);
@@ -235,7 +235,7 @@ void elims(){
     pros::delay(250);
     lowerintake.move(-127);
     upperintake.move(-127);
-    pros::delay(2000);
+    pros::delay(1800);
     upperintake.move(127);
     tongue.set_value(false);
     //goes to wing pos and turns
