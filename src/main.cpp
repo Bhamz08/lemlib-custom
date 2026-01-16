@@ -158,66 +158,7 @@ void angpid(){
     chassis.turnToHeading(90, 2000);
     chassis.waitUntilDone();
 }
-// void leftquals(){
-//     chassis.setPose(lemlib::Pose(-46.665, 14.467, 90.1));        
-// 	upperintake.move(127);
-//             lowerintake.move(-127);
-// 	chassis.follow(leftqualsdecode["Drive to the 3 blocks"], 15, 2000);
-// 	chassis.waitUntil(20);
-// 	tongue.set_value(true);
-// 	chassis.waitUntilDone();
-// 	chassis.turnToHeading(137, 2000);
-// 	chassis.follow(leftqualsdecode["move to long goal"], 15, 2000, false);
-// 	chassis.waitUntilDone();	
-// 		        upperintake.move(-80);
-// 			pros::delay(500);
-// 			upperintake.move(127);
-// 	chassis.turnToHeading(300, 2000);
-// 	chassis.follow(leftqualsdecode["matchload"], 15, 2000, true);
-// 	chassis.waitUntilDone();
-// 	pros::delay(1000);
-// 	chassis.turnToHeading(270, 2000);
-// 	chassis.follow(leftqualsdecode["score long goal"], 15, 2000, false);
-// 	chassis.waitUntilDone();
-// 	lowerintake.move(127);
-// 	pros::delay(250);
-// 	lowerintake.move(-127);
-// 	upperintake.move(-127);
-// 	pros::delay(1000);
-// 	chassis.turnToHeading(209.4, 2000);
-// 	chassis.follow(leftqualsdecode["descorefwd"], 15, 2000);
-//     chassis.waitUntilDone();
-//     chassis.turnToHeading(350.1, 500);
-//     chassis.follow(leftqualsdecode["descorerev"], 15, 2000, false);
-// }
 
-// void LeftElims(){
-//     chassis.setPose(lemlib::Pose(-46.714, 13.681, 90));
-// 	     upperintake.move(127);
-//          lowerintake.move(-127);
-// chassis.follow(leftelimsdecode["3 Balls"], 15, 2000);
-// 	chassis.waitUntil(20);
-// 	tongue.set_value(true);
-// 	chassis.waitUntilDone();
-// 	chassis.turnToHeading(315.4, 2000);
-// 	chassis.follow(leftelimsdecode["Matchload"], 15, 2000);
-// 	chassis.waitUntilDone();
-// 	pros::delay(1000);
-// 	chassis.turnToHeading(270, 2000);
-// 	chassis.follow(leftelimsdecode["Long goal scoring"], 15, 2000, false);
-// 	chassis.waitUntilDone();
-// 	lowerintake.move(127);
-// 	pros::delay(250);
-// 	lowerintake.move(-127);
-// 	upperintake.move(-127);
-// 	pros::delay(1000);
-// 	chassis.turnToHeading(169.8, 2000);
-// 	chassis.follow(leftelimsdecode["descorefwd"], 15, 2000);
-//     chassis.waitUntilDone();
-//     chassis.turnToHeading(326.5, 500);
-//     chassis.follow(leftelimsdecode["descorerev"], 15, 2000, false);
-//     chassis.waitUntilDone();
-// }
 void sawp(){
 chassis.setPose(0, 0, 0);
 //matchload 1
