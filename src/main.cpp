@@ -107,20 +107,19 @@ void cdrift(float lV, float rV, int timeout, bool cst) {
  */
 // initialize function. Runs on program startup
 void initialize() {
-    //pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate();
- // calibrate sensors
+    pros::lcd::initialize(); // initialize brain screen
+    chassis.calibrate(); // calibrate sensors
     // print position to brain screen
-    // pros::Task screen_task([&]() {
-    //     while (true) {
-    //         // print robot location to the brain screen
-    //         pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-    //         pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-    //         pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-    //         // delay to save resources
-    //         pros::delay(20);
-    //     }
-    // });
+    pros::Task screen_task([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+            // delay to save resources
+            pros::delay(20);
+        }
+    });
 }
 
 
@@ -134,17 +133,7 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-// get a path used for pure pursuit
-// // this needs to be put outside a function
-// ASSET(Leftquals_txt); // '.' replaced with "_" to make c++ happy
-// ASSET(LeftElims_txt);
-// ASSET(sawp_txt);
-// ASSET(linpid_txt);
-// // Create the decoder
-// lemlib_tarball::Decoder leftqualsdecode(Leftquals_txt);
-// lemlib_tarball::Decoder leftelimsdecode(LeftElims_txt);
-// lemlib_tarball::Decoder sawpdecode(sawp_txt);
-//add staring pos
+
 void linpid(){
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
     chassis.setPose(lemlib::Pose(-48, 24, 180));
@@ -160,69 +149,75 @@ void angpid(){
 }
 
 void sawp(){
-chassis.setPose(0, 0, 0);
-//matchload 1
-chassis.moveToPose(-10, 32, 90, 1500, {.lead = 0.5});
-chassis.waitUntilDone();
-tongue.set_value(true);
-pros::delay(100);
+wing.set_value(true);
+hood.set_value(false);
 upperintake.move(127);
 lowerintake.move(-127);
-chassis.moveToPose(8, 30, 90, 900, {.lead = 0.1, .maxSpeed = 127});
+chassis.setPose(0, 0, 0);
+//matchload 1
+chassis.moveToPoint(0, 30, 800, {.maxSpeed = 127});
+chassis.turnToHeading(90, 600);
+tongue.set_value(true);
+chassis.moveToPose(14, 35, 90, 800, {.lead = 0.1, .maxSpeed = 127 });
 chassis.waitUntilDone();
-pros::delay(525);
-//long goal + score
-chassis.moveToPose(-35, 31, 90, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 90});
+pros::delay(420);
+//go to long goal
+chassis.moveToPose(-20.25, 35.5, 90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+chassis.waitUntilDone();
+upperintake.move(-127);
+lowerintake.move(-127);
+pros::delay(850);
+//turn to mid
+chassis.moveToPoint(-7, 32, 700, {.maxSpeed = 127});
+tongue.set_value(false);
+chassis.turnToHeading(225, 600);
+upperintake.move(127);
+lowerintake.move(-127);
+//go to mid
+chassis.moveToPoint(-24.5, 10.5, 900, {.maxSpeed = 127});
+chassis.waitUntil(19);
+tongue.set_value(true);
 chassis.waitUntilDone();
 tongue.set_value(false);
+chassis.turnToHeading(-180, 600);
+//second mid
+chassis.moveToPoint(-24.5, -38, 1200, {.maxSpeed = 127});
+chassis.waitUntil(27.8);
+tongue.set_value(true);
+chassis.waitUntilDone();
+hood.set_value(true);
+chassis.turnToHeading(132, 700, {.maxSpeed = 127});
+//go to mid goal and score
+chassis.moveToPose(-37, -23.2, 132, 1000, {.forwards = false, .lead = 0.1,  .maxSpeed = 127});
+chassis.waitUntilDone();
 lowerintake.move(127);
 pros::delay(150);
 lowerintake.move(-127);
 upperintake.move(-127);
-pros::delay(1100);
-upperintake.move(127);
-chassis.moveToPoint(-20.26, 30.76, 700);
-chassis.turnToHeading(209.7, 650);
-//first 3 set
-chassis.moveToPoint(-32.65, 6.8, 800);
-chassis.waitUntil(16.5);
-tongue.set_value(true);
-chassis.turnToHeading(180, 550);
-tongue.set_value(false);
-chassis.moveToPoint(-31, -41, 1200);
-chassis.waitUntil(28);
-tongue.set_value(true);
-chassis.turnToHeading(135.8, 550);
-chassis.waitUntilDone();
-tongue.set_value(false);
-chassis.moveToPose(-43.94, -25.1, 135.8, 900, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
-chassis.waitUntilDone();
-hood.set_value(true);
+pros::delay(550);
 lowerintake.move(-127);
-upperintake.move(-127);
-pros::delay(370);
 upperintake.move(127);
-chassis.moveToPoint(-9.33, -62.91, 1350);
-chassis.turnToHeading(90, 700);
 hood.set_value(false);
-//-27.6, 63.3
-chassis.moveToPose(-28, -63.1, 90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 120});
+chassis.moveToPoint(2, -58, 1100, {.maxSpeed = 127});
+chassis.turnToHeading(90, 600);
+chassis.moveToPose(14, -58, 90, 800, {.lead = 0.1, .maxSpeed = 127 });
 chassis.waitUntilDone();
-lowerintake.move(127);
-pros::delay(100);
-lowerintake.move(-127);
+pros::delay(400);
+chassis.moveToPose(-20, -58, 90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+chassis.waitUntilDone();
 upperintake.move(-127);
+lowerintake.move(-127);
+chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 void elims(){
     //go to mid 3 and tongue
+    wing.set_value(true);
     chassis.setPose(0, 0, 0);
     upperintake.move(127);
     lowerintake.move(-127);
-    wing.set_value(true);
-    wing.set_value(false);
     chassis.moveToPose(7.41, 23.92, 38.63, 1000, {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
-    chassis.waitUntil(19);
+    chassis.waitUntil(18.9);
     tongue.set_value(true);
     chassis.turnToHeading(127, 700, {.maxSpeed=127});
     //go to matchload pos
@@ -231,11 +226,10 @@ void elims(){
     //enter matchload
     chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed=127});
     chassis.waitUntilDone();
-    pros::delay(600);
+    pros::delay(500);
     //go to goal and score
-    chassis.moveToPose(33, 18, 180, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+    chassis.moveToPose(33.5, 20, 180, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
     chassis.waitUntil(15.5);
-    tongue.set_value(false);
     chassis.waitUntilDone();
     lowerintake.move(127);
     pros::delay(250);
@@ -243,16 +237,17 @@ void elims(){
     upperintake.move(-127);
     pros::delay(2000);
     upperintake.move(127);
+    tongue.set_value(false);
     //goes to wing pos and turns
     // chassis.moveToPoint(32.7, 5, 800, {.maxSpeed=127});
     // chassis.turnToHeading(302, 600, {.maxSpeed=127});
     // chassis.waitUntil(5);
     lowerintake.move(0);
     upperintake.move(0);
-    chassis.moveToPose(23.7, 7.2, 302, 1000, {.maxSpeed=127});
-    chassis.turnToHeading(0, 600);
+    wing.set_value(false);
+    chassis.moveToPose(20, 7, 0, 1200, {.maxSpeed=127});
     //go into wing
-    chassis.moveToPoint(23.7, 28, 1000, {.maxSpeed=127});
+    chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed=127});
     chassis.waitUntilDone();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 
@@ -261,6 +256,7 @@ void elims(){
 
 void quals(){
     //go to matchload and matchload
+    wing.set_value(true);
     chassis.setPose(0, 0, 0);
     upperintake.move(127);
     lowerintake.move(-127);
@@ -268,41 +264,42 @@ void quals(){
     chassis.moveToPoint(2, 32, 1200, {.maxSpeed = 127});
     chassis.turnToHeading(-90, 700);
     tongue.set_value(true);;
-    chassis.moveToPose(-11, 28, -90, 800, {.lead = 0.1, .maxSpeed = 127 });
+    chassis.moveToPose(-12, 30, -90, 800, {.lead = 0.1, .maxSpeed = 127 });
     chassis.waitUntilDone();
-    pros::delay(450);
+    pros::delay(517);
     //go to long goal
-    chassis.moveToPose(21.5, 28, -90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 85});
+    chassis.moveToPose(21.1, 30.5, -90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
     chassis.waitUntilDone();
     lowerintake.move(-127);
     upperintake.move(-127);
-    pros::delay(900);
+    pros::delay(1050);
     tongue.set_value(false);
     //go to middle 3
-    chassis.moveToPoint(11, 28, 700, {.maxSpeed = 127});
+    chassis.moveToPoint(11, 30, 700, {.maxSpeed = 127});
     chassis.turnToHeading(-213, 600);
     upperintake.move(127);
     //tongue
     chassis.moveToPoint(29.3, 8, 1200, {.maxSpeed = 127});
-    chassis.waitUntil(22);
+    chassis.waitUntil(21.57);
     tongue.set_value(true);
     chassis.waitUntilDone();
     chassis.turnToHeading(-47, 800, {.maxSpeed = 127});
     //go to mid goal and score
-    chassis.moveToPose(46.5, -17, -47, 1000, {.forwards = false, .lead = 0.1,  .maxSpeed = 127});
+    chassis.moveToPose(48.5, -15, -47, 1200, {.forwards = false, .lead = 0.1,  .maxSpeed = 127});
     chassis.waitUntilDone();
     lowerintake.move(-110);
     upperintake.move(-95);
     hood.set_value(true);
-    pros::delay(650);
+    pros::delay(750);
     hood.set_value(false);
     tongue.set_value(false);
+    wing.set_value(false);
     //go to wing pos
-    chassis.moveToPoint(23.27, 9.7, 1350, {.maxSpeed = 127});
+    chassis.moveToPoint(23.27, 13, 1000, {.maxSpeed = 127});
     chassis.waitUntilDone();
-    chassis.turnToHeading(-95, 700);
-    // chassis.moveToPoint(47, 9.75, 800, {.forwards = false, .maxSpeed = 127});
-    // chassis.waitUntilDone();
+    chassis.turnToHeading(-90, 700);
+    chassis.moveToPoint(47, 13, 800, {.forwards = false, .maxSpeed = 127});
+    chassis.waitUntilDone();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 
 }
@@ -314,16 +311,14 @@ void quals(){
  *
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
-	rd::Selector selector({
-    {"SAWP", sawp},
-     {"Eliminations", elims},
-     {"Quals 4+3", quals}
-});
+// 	rd::Selector selector({
+//     {"SAWP", sawp},
+//      {"Eliminations", elims},
+//      {"Quals 4+3", quals}
+// });
 
  void autonomous() {
-    wing.set_value(true);
-    wing.set_value(false);
-    selector.run_auton();
+   sawp();
 
    
 }
@@ -380,6 +375,11 @@ void opcontrol() {
 				hood_state = !hood_state;
 				hood.set_value(hood_state);
 		}		
+
+
+
+        // // //move hood manually
+        // hood.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT));
 
 
 
