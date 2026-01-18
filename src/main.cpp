@@ -163,114 +163,108 @@ void angpid() {
   chassis.waitUntilDone();
 }
 
-void sawp() {
-  wing.set_value(true);
-  hood.set_value(false);
-  upperintake.move(127);
-  lowerintake.move(-127);
-  chassis.setPose(0, 0, 0);
-  // matchload 1
-  chassis.moveToPoint(0, 30, 800, {.maxSpeed = 127});
-  chassis.turnToHeading(90, 600);
-  tongue.set_value(true);
-  chassis.moveToPose(14, 35, 90, 800, {.lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  pros::delay(420);
-  // go to long goal
-  chassis.moveToPose(-20.25, 35.5, 90, 800,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  upperintake.move(-127);
-  lowerintake.move(-127);
-  pros::delay(850);
-  // turn to mid
-  chassis.moveToPoint(-7, 32, 700, {.maxSpeed = 127});
-  tongue.set_value(false);
-  chassis.turnToHeading(225, 600);
-  upperintake.move(127);
-  lowerintake.move(-127);
-  // go to mid
-  chassis.moveToPoint(-24.5, 10.5, 900, {.maxSpeed = 127});
-  chassis.waitUntil(19);
-  tongue.set_value(true);
-  chassis.waitUntilDone();
-  tongue.set_value(false);
-  chassis.turnToHeading(-180, 600);
-  // second mid
-  chassis.moveToPoint(-24.5, -38, 1200, {.maxSpeed = 127});
-  chassis.waitUntil(27.8);
-  tongue.set_value(true);
-  chassis.waitUntilDone();
-  hood.set_value(true);
-  chassis.turnToHeading(132, 700, {.maxSpeed = 127});
-  // go to mid goal and score
-  chassis.moveToPose(-37, -23.2, 132, 1000,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  lowerintake.move(127);
-  pros::delay(150);
-  lowerintake.move(-127);
-  upperintake.move(-127);
-  pros::delay(550);
-  lowerintake.move(-127);
-  upperintake.move(127);
-  hood.set_value(false);
-  chassis.moveToPoint(2, -58, 1100, {.maxSpeed = 127});
-  chassis.turnToHeading(90, 600);
-  chassis.moveToPose(14, -58, 90, 800, {.lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  pros::delay(400);
-  chassis.moveToPose(-20, -58, 90, 800,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  upperintake.move(-127);
-  lowerintake.move(-127);
-  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+void sawp(){
+wing.set_value(true);
+hood.set_value(false);
+upperintake.move(127);
+lowerintake.move(-127);
+chassis.setPose(0, 0, 0);
+//matchload 1
+chassis.moveToPoint(0, 30, 800, {.maxSpeed = 127});
+chassis.turnToHeading(90, 600);
+tongue.set_value(true);
+chassis.moveToPose(14, 35, 90, 800, {.lead = 0.1, .maxSpeed = 127 });
+chassis.waitUntilDone();
+pros::delay(420);
+//go to long goal
+chassis.moveToPose(-20.25, 35.5, 90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+chassis.waitUntilDone();
+upperintake.move(-127);
+lowerintake.move(-127);
+pros::delay(850);
+//turn to mid
+chassis.moveToPoint(-7, 32, 700, {.maxSpeed = 127});
+tongue.set_value(false);
+chassis.turnToHeading(225, 600);
+upperintake.move(127);
+lowerintake.move(-127);
+//go to mid
+chassis.moveToPoint(-24.5, 10.5, 900, {.maxSpeed = 127});
+chassis.waitUntil(19);
+tongue.set_value(true);
+chassis.waitUntilDone();
+tongue.set_value(false);
+chassis.turnToHeading(-180, 600);
+//second mid
+chassis.moveToPoint(-24.5, -38, 1200, {.maxSpeed = 127});
+chassis.waitUntil(27.8);
+tongue.set_value(true);
+chassis.waitUntilDone();
+hood.set_value(true);
+chassis.turnToHeading(132, 700, {.maxSpeed = 127});
+//go to mid goal and score
+chassis.moveToPose(-37, -23.2, 132, 1000, {.forwards = false, .lead = 0.1,  .maxSpeed = 127});
+chassis.waitUntilDone();
+lowerintake.move(127);
+pros::delay(150);
+lowerintake.move(-127);
+upperintake.move(-127);
+pros::delay(550);
+lowerintake.move(-127);
+upperintake.move(127);
+hood.set_value(false);
+chassis.moveToPoint(2, -58, 1100, {.maxSpeed = 127});
+chassis.turnToHeading(90, 600);
+chassis.moveToPose(14, -58, 90, 800, {.lead = 0.1, .maxSpeed = 127 });
+chassis.waitUntilDone();
+pros::delay(400);
+chassis.moveToPose(-20, -58, 90, 800, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+chassis.waitUntilDone();
+upperintake.move(-127);
+lowerintake.move(-127);
+chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
-void elims() {
-  // go to mid 3 and tongue
-  wing.set_value(true);
-  chassis.setPose(0, 0, 0);
-  upperintake.move(127);
-  lowerintake.move(-127);
-  chassis.moveToPose(
-      7.41, 23.92, 38.63, 1000,
-      {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
-  chassis.waitUntil(18.9);
-  tongue.set_value(true);
-  chassis.turnToHeading(127, 600, {.maxSpeed = 127});
-  // go to matchload pos
-  chassis.moveToPoint(31.95, -2.24, 900, {.maxSpeed = 127});
-  chassis.turnToHeading(180, 600);
-  // enter matchload
-  chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  pros::delay(450);
-  // go to goal and score
-  chassis.moveToPose(33.5, 20, 180, 1200,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntil(15.5);
-  chassis.waitUntilDone();
-  lowerintake.move(127);
-  pros::delay(250);
-  lowerintake.move(-127);
-  upperintake.move(-127);
-  pros::delay(1800);
-  upperintake.move(127);
-  tongue.set_value(false);
-  // goes to wing pos and turns
-  //  chassis.moveToPoint(32.7, 5, 800, {.maxSpeed=127});
-  //  chassis.turnToHeading(302, 600, {.maxSpeed=127});
-  //  chassis.waitUntil(5);
-  lowerintake.move(0);
-  upperintake.move(0);
-  wing.set_value(false);
-  chassis.moveToPose(20, 7, 0, 1200, {.maxSpeed = 127});
-  // go into wing
-  chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed = 127});
-  chassis.waitUntilDone();
-  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+void elims(){
+    //go to mid 3 and tongue
+    wing.set_value(true);
+    chassis.setPose(0, 0, 0);
+    upperintake.move(127);
+    lowerintake.move(-127);
+    chassis.moveToPose(7.41, 23.92, 38.63, 1000, {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
+    chassis.waitUntil(18.9);
+    tongue.set_value(true);
+    chassis.turnToHeading(127, 600, {.maxSpeed=127});
+    //go to matchload pos
+    chassis.moveToPoint(31.95, -2.24, 900, {.maxSpeed = 127});
+    chassis.turnToHeading(180, 600);
+    //enter matchload
+    chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed=127});
+    chassis.waitUntilDone();
+    pros::delay(450);
+    //go to goal and score
+    chassis.moveToPose(33.5, 20, 180, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+    chassis.waitUntil(15.5);
+    chassis.waitUntilDone();
+    lowerintake.move(127);
+    pros::delay(250);
+    lowerintake.move(-127);
+    upperintake.move(-127);
+    pros::delay(1800);
+    upperintake.move(127);
+    tongue.set_value(false);
+    //goes to wing pos and turns
+    // chassis.moveToPoint(32.7, 5, 800, {.maxSpeed=127});
+    // chassis.turnToHeading(302, 600, {.maxSpeed=127});
+    // chassis.waitUntil(5);
+    lowerintake.move(0);
+    upperintake.move(0);
+    wing.set_value(false);
+    chassis.moveToPose(20, 7, 0, 1200, {.maxSpeed=127});
+    //go into wing
+    chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed=127});
+    chassis.waitUntilDone();
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
 }
 
 void quals() {
@@ -325,19 +319,27 @@ void quals() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
+
+
 /**
  * Runs during auto
  *
  * This is an example autonomous routine which demonstrates a lot of the
  * features LemLib has to offer
  */
-// 	rd::Selector selector({
+//  	rd::Selector selector({
 //     {"SAWP", sawp},
 //      {"Eliminations", elims},
-//      {"Quals 4+3", quals}
+//      {"Quals 4+3", quals},
+//      {"4 Ball Rush", beatC},
+//      {"skillsdoesnt work", skills}
 // });
 
-void autonomous() { sawp(); }
+ void autonomous() {
+   sawp();
+
+   
+}
 
 /**
  * Runs in driver control
