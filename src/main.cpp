@@ -447,9 +447,9 @@ void skills() {
   chassis.moveToPoint(-31, -15, 750);
   //score on long goal
   pros::delay(2500);
-  chassis.moveToPoint(-31, 0, 750, {.forwards=false});
+  //chassis.moveToPoint(-31, 0, 750, {.forwards=false});
   //go to long goal
-  chassis.turnToHeading(-225, 550);
+  //chassis.turnToHeading(-225, 550);
   chassis.moveToPoint(-42, 13, 700, {.forwards = false});
   chassis.turnToHeading(-180, 500);
   
