@@ -67,7 +67,7 @@ void intakeCenterGoal() {
 
 void intakeLongGoal() {
   // speed
-  lowerIntakeSpeed = -127;
+  lowerIntakeSpeed = 127;
   upperIntakeSpeed = 127;
 
   // states
