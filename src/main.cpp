@@ -130,14 +130,14 @@ void sawp() {
   intakeLoad();
   chassis.setPose(0, 0, 0);
   // matchload 1
-  chassis.moveToPoint(0, 28, 800, {.maxSpeed = 127});
+  chassis.moveToPoint(0, 30, 800, {.maxSpeed = 127});
   chassis.turnToHeading(90, 600);
   tongue.set_value(true);
-  chassis.moveToPose(14, 34, 90, 800, {.lead = 0.1, .maxSpeed = 127});
+  chassis.moveToPose(14, 35, 90, 800, {.lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   pros::delay(420);
   // go to long goal
-  chassis.moveToPose(-20.25, 34.5, 90, 800,
+  chassis.moveToPose(-20.25, 35.5, 90, 800,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
@@ -145,7 +145,7 @@ void sawp() {
   // turn to mid
   chassis.moveToPoint(-7, 32, 700, {.maxSpeed = 127});
   tongue.set_value(false);
-  chassis.turnToHeading(223, 600);
+  chassis.turnToHeading(225, 600);
   intakeLoad();
   // go to mid
   chassis.moveToPoint(-24.5, 10.5, 900, {.maxSpeed = 127});
@@ -156,20 +156,22 @@ void sawp() {
   chassis.turnToHeading(-180, 600);
   // second mid
   chassis.moveToPoint(-24.5, -38, 1200, {.maxSpeed = 127});
-  chassis.waitUntil(27.5);
+  chassis.waitUntil(27.8);
   tongue.set_value(true);
   chassis.waitUntilDone();
-  hood.set_value(true);
+  centerGoalScoring = true;
   chassis.turnToHeading(132, 700, {.maxSpeed = 127});
   // go to mid goal and score
   chassis.moveToPose(-37, -23.2, 132, 1000,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  setIntake(-127, 127);
-  pros::delay(100);
-  setIntake(127, 110);
-  pros::delay(550);
+  intakeOuttake();
+  pros::delay(150);
   intakeCenterGoal();
+  pros::delay(550);
+  centerGoalScoring = false;
+  longGoalScoring = true;
+  intakeLoad();
   chassis.moveToPoint(2, -58, 1100, {.maxSpeed = 127});
   chassis.turnToHeading(90, 600);
   chassis.moveToPose(14, -58, 90, 800, {.lead = 0.1, .maxSpeed = 127});
@@ -178,7 +180,6 @@ void sawp() {
   chassis.moveToPose(-20, -58, 90, 800,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  pros::delay(100);
   intakeLongGoal();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
