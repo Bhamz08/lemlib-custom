@@ -22,6 +22,13 @@ pros::MotorGroup
 pros::MotorGroup rightMotors(
     {15, 8, -18},
     pros::MotorGearset::blue); // right motor group - ports 6, 7, 9 (reversed)
+pros::MotorGroup
+    leftMotors({-12, -10, 9},
+               pros::MotorGearset::blue); // left motor group - ports 3
+                                          // (reversed), 4, 5 (reversed)
+pros::MotorGroup rightMotors(
+    {15, 8, -18},
+    pros::MotorGearset::blue); // right motor group - ports 6, 7, 9 (reversed)
 
 // Inertial Sensor on port 10
 pros::Imu imu(14);
@@ -29,7 +36,17 @@ pros::Imu imu(14);
 // tracking wheels
 // horizontal tracking wheel encoder. Rotation sensor, port 20, not reversed
 // pros::Rotation horizontalEnc(20);
+// pros::Rotation horizontalEnc(20);
 // vertical tracking wheel encoder. Rotation sensor, port 11, reversed
+// pros::Rotation verticalEnc(-11);
+// horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot
+// (negative)
+// lemlib::TrackingWheel horizontal(&horizontalEnc, lemlib::Omniwheel::NEW_275,
+// -5.75);
+// vertical tracking wheel. 2.75" diameter, 2.5" offset, left of the robot
+// (negative)
+// lemlib::TrackingWheel vertical(&verticalEnc, lemlib::Omniwheel::NEW_275,
+// -2.5);
 // pros::Rotation verticalEnc(-11);
 // horizontal tracking wheel. 2.75" diameter, 5.75" offset, back of the robot
 // (negative)
@@ -48,7 +65,25 @@ lemlib::Drivetrain drivetrain(
     lemlib::Omniwheel::NEW_325, // using new 4" omnis
     450,                        // drivetrain rpm is 360
     2 // horizontal drift is 2. If we had traction wheels, it would have been 8
+lemlib::Drivetrain drivetrain(
+    &leftMotors,                // left motor group
+    &rightMotors,               // right motor group
+    10,                         // 10 inch track width
+    lemlib::Omniwheel::NEW_325, // using new 4" omnis
+    450,                        // drivetrain rpm is 360
+    2 // horizontal drift is 2. If we had traction wheels, it would have been 8
 );
+lemlib::ControllerSettings
+    lateral_controller(5.8, // proportional gain (kP)
+                       0,   // integral gain (kI)
+                       5,   // derivative gain (kD)
+                       0,   // anti windup
+                       3,   // small error range, in inches
+                       250, // small error range timeout, in milliseconds
+                       5,   // large error range, in inches
+                       500, // large error range timeout, in milliseconds
+                       0    // maximum acceleration (slew)
+    );
 lemlib::ControllerSettings
     lateral_controller(5.8, // proportional gain (kP)
                        0,   // integral gain (kI)
@@ -72,18 +107,39 @@ lemlib::ControllerSettings
                       500,  // large error range timeout, in milliseconds
                       0     // maximum acceleration (slew)
     );
+lemlib::ControllerSettings
+    angularController(3.16, // proportional gain (kP)
+                      0,    // integral gain (kI)
+                      20,   // derivative gain (kD)
+                      5,    // anti windup
+                      1,    // small error range, in degrees
+                      100,  // small error range timeout, in milliseconds
+                      5,    // large error range, in degrees
+                      500,  // large error range timeout, in milliseconds
+                      0     // maximum acceleration (slew)
+    );
 
 // sensors for odometry
 lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel
+                            nullptr, // vertical tracking wheel 2, set to
+                                     // nullptr as we don't have a second one
                             nullptr, // vertical tracking wheel 2, set to
                                      // nullptr as we don't have a second one
                             nullptr, // horizontal tracking wheel
                             nullptr, // horizontal tracking wheel 2, set to
                                      // nullptr as we don't have a second one
                             &imu     // inertial sensor
+                            nullptr, // horizontal tracking wheel 2, set to
+                                     // nullptr as we don't have a second one
+                            &imu     // inertial sensor
 );
 
 // input curve for throttle input during driver control
+lemlib::ExpoDriveCurve
+    throttleCurve(3,    // joystick deadband out of 127
+                  10,   // minimum output where drivetrain will move out of 127
+                  1.019 // expo curve gain
+    );
 lemlib::ExpoDriveCurve
     throttleCurve(3,    // joystick deadband out of 127
                   10,   // minimum output where drivetrain will move out of 127
@@ -96,12 +152,28 @@ lemlib::ExpoDriveCurve
                10,   // minimum output where drivetrain will move out of 127
                1.019 // expo curve gain
     );
+lemlib::ExpoDriveCurve
+    steerCurve(3,    // joystick deadband out of 127
+               10,   // minimum output where drivetrain will move out of 127
+               1.019 // expo curve gain
+    );
 
 // create the chassis
 lemlib::Chassis chassis(drivetrain, lateral_controller, angularController,
                         sensors, &throttleCurve, &steerCurve);
+lemlib::Chassis chassis(drivetrain, lateral_controller, angularController,
+                        sensors, &throttleCurve, &steerCurve);
 
 void cdrift(float lV, float rV, int timeout, bool cst) {
+  (cst == true) ? (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST),
+                   rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST))
+                : (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE),
+                   rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE));
+  leftMotors.move(lV);
+  rightMotors.move(rV);
+  pros::delay(timeout);
+  leftMotors.brake();
+  rightMotors.brake();
   (cst == true) ? (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST),
                    rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST))
                 : (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE),
@@ -153,7 +225,17 @@ void linpid() {
   chassis.moveToPoint(-48, -24, 2000);
   // chassis.follow(linpid_txt, 3, 2000);
   chassis.waitUntilDone();
+void linpid() {
+  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  chassis.setPose(lemlib::Pose(-48, 24, 180));
+  chassis.moveToPoint(-48, -24, 2000);
+  // chassis.follow(linpid_txt, 3, 2000);
+  chassis.waitUntilDone();
 }
+void angpid() {
+  chassis.setPose(lemlib::Pose(0, 0, 0));
+  chassis.turnToHeading(90, 2000);
+  chassis.waitUntilDone();
 void angpid() {
   chassis.setPose(lemlib::Pose(0, 0, 0));
   chassis.turnToHeading(90, 2000);
@@ -381,6 +463,8 @@ void skills() {
 /**
  * Runs during auto
  *
+ * This is an example autonomous routine which demonstrates a lot of the
+ * features LemLib has to offer
  * This is an example autonomous routine which demonstrates a lot of the
  * features LemLib has to offer
  */
