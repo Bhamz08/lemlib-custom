@@ -56,11 +56,11 @@ void intakeCenterGoal() {
   upperIntakeSpeed = 90;
 
   // states
-  if (!longGoalScoring)
+  if (!centerGoalScoring)
     lastCheckTime = pros::millis();
   loading = false;
-  longGoalScoring = true;
-  centerGoalScoring = false;
+  longGoalScoring = false;
+  centerGoalScoring = true;
   outtaking = false;
   halted = false;
 }
@@ -71,11 +71,11 @@ void intakeLongGoal() {
   upperIntakeSpeed = 127;
 
   // states
-  if (!centerGoalScoring)
+  if (!longGoalScoring)
     lastCheckTime = pros::millis();
   loading = false;
-  longGoalScoring = false;
-  centerGoalScoring = true;
+  longGoalScoring = true;
+  centerGoalScoring = false;
   outtaking = false;
   halted = false;
 }
@@ -128,7 +128,7 @@ void asyncIntakeControl(void *param) {
       if (!halted) {
         bool jammed = false;
         // check if any motors are jammed while intaking
-        if (longGoalScoring || centerGoalScoring) {
+        if (longGoalScoring || centerGoalScoring || loading) {
           if (fabs(upperIntake.get_actual_velocity()) < 5 ||
               fabs(lowerIntake.get_actual_velocity()) < 5) {
             upperIntake.move(-127);
