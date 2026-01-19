@@ -431,27 +431,27 @@ void skills() {
   //intake center goal blocks
   chassis.moveToPoint(0, 15, 750, {.maxSpeed = 127});
   chassis.turnToHeading(-45, 600);
-  chassis.moveToPoint(-8, 22, 750, {.maxSpeed = 127});
+  chassis.moveToPoint(-8, 22, 650, {.maxSpeed = 127});
   chassis.turnToHeading(-140, 600);
   //score on center goal
   chassis.moveToPoint(6, 34, 750, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntil(10);
   pros::delay(100);
   intakeCenterGoal();
-  pros::delay(1000);
+  pros::delay(800);
   intakeLoad();
   //get matchloader
   chassis.moveToPoint(-31, 0, 1250, {.maxSpeed=127});
   chassis.turnToHeading(-180, 400);
   tongue.set_value(true);
-  chassis.moveToPoint(-31, -14, 750);
+  chassis.moveToPoint(-31, -15, 750);
   //score on long goal
-  pros::delay(4000);
+  pros::delay(2500);
   chassis.moveToPoint(-31, 0, 750, {.forwards=false});
   //go to long goal
-  chassis.turnToHeading(-225, 600);
-  chassis.moveToPoint(-42, 13, 750, {.forwards = false});
-  chassis.turnToHeading(-180, 600);
+  chassis.turnToHeading(-225, 550);
+  chassis.moveToPoint(-42, 13, 700, {.forwards = false});
+  chassis.turnToHeading(-180, 500);
   
 
 
