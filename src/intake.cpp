@@ -52,8 +52,8 @@ void intakeLoad() {
 
 void intakeCenterGoal() {
   // speed
-  lowerIntakeSpeed = 127;
-  upperIntakeSpeed = 80;
+  lowerIntakeSpeed = 110;
+  upperIntakeSpeed = 90;
 
   // states
   if (!longGoalScoring)
