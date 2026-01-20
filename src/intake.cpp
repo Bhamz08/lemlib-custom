@@ -38,7 +38,7 @@ void setIntake(int lowerSpeed, int upperSpeed) {
 void intakeLoad() {
   // speed
   lowerIntakeSpeed = 127;
-  upperIntakeSpeed = -127;
+  upperIntakeSpeed = -80;
 
   // states
   if (!loading)
@@ -117,41 +117,41 @@ void asyncIntakeControl(void *param) {
     upperIntake.move(upperIntakeSpeed);
 
     if (centerGoalScoring) {
-      hood.set_value(false);
+      hood.set_value(true);
     }
     if (longGoalScoring) {
-      hood.set_value(true);
+      hood.set_value(false);
     }
 
     // anti jam
-    if (pros::millis() - lastCheckTime > 750) {
-      if (!halted) {
-        bool jammed = false;
-        // check if any motors are jammed while intaking
-        if (longGoalScoring || centerGoalScoring || loading) {
-          if (fabs(upperIntake.get_actual_velocity()) < 5 ||
-              fabs(lowerIntake.get_actual_velocity()) < 5) {
-            upperIntake.move(-127);
-            lowerIntake.move(-127);
-            jammed = true;
-          }
-        } else if (outtaking) {
-          if (fabs(upperIntake.get_actual_velocity()) < 5 ||
-              fabs(lowerIntake.get_actual_velocity()) < 5) {
-            upperIntake.move(127);
-            lowerIntake.move(127);
-            jammed = true;
-          }
-        }
+     if (pros::millis() - lastCheckTime > 1000) {
+       if (!halted) {
+         bool jammed = false;
+         // check if any motors are jammed while intaking
+         if (longGoalScoring || centerGoalScoring) {
+           if (fabs(upperIntake.get_actual_velocity()) < 3 ||
+               fabs(lowerIntake.get_actual_velocity()) < 3) {
+             upperIntake.move(-127);
+             lowerIntake.move(-127);
+             jammed = true;
+           }
+         } else if (outtaking) {
+           if (fabs(upperIntake.get_actual_velocity()) < 3 ||
+               fabs(lowerIntake.get_actual_velocity()) < 3) {
+             upperIntake.move(127);
+             lowerIntake.move(127);
+             jammed = true;
+           }
+         }
 
-        if (jammed) {
-          // delay to let the "pulse" happen
-          pros::delay(300);
-          // reset timer
-          lastCheckTime = pros::millis();
-        }
-      }
-    }
+         if (jammed) {
+           // delay to let the "pulse" happen
+           pros::delay(75);
+           // reset timer
+           lastCheckTime = pros::millis();
+         }
+       }
+     }
 
     // delay
     pros::delay(20);
