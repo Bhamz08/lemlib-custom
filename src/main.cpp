@@ -10,6 +10,7 @@
 #include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 #include "robodash/api.h"
+#include "subsystems.hpp"
 
 // controller
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -306,30 +307,86 @@ void beatC() {
 
 void skills() {
   wing.set_value(true);
-  hood.set_value(false);
+  hood.set_value(true);
   chassis.setPose(0, 0, 0);
   intakeLoad();
   // intake center goal blocks
-  chassis.moveToPoint(0, 15, 750, {.maxSpeed = 127});
+  chassis.moveToPoint(0, 15, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-45, 600);
-  chassis.moveToPoint(-8, 22, 650, {.maxSpeed = 127});
+  chassis.moveToPoint(-8, 22, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-140, 600);
   // score on center goal
-  chassis.moveToPoint(6, 34, 750, {.forwards = false, .maxSpeed = 127});
-  chassis.waitUntil(10);
-  pros::delay(100);
-  intakeCenterGoal();
-  pros::delay(800);
+  chassis.moveToPoint(6.5, 34.5, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.waitUntilDone();
+  setIntake( 120, 110);
+  pros::delay(420);
   intakeLoad();
   // get matchloader
   chassis.moveToPoint(-31, 0, 1250, {.maxSpeed = 127});
   chassis.turnToHeading(-180, 400);
   tongue.set_value(true);
-  chassis.moveToPoint(-31, -15, 750);
+  chassis.moveToPoint(-31, -14.75, 800);
   // score on long goal
+  pros::delay(2100);
+  chassis.moveToPoint(-31, 0, 1100, {.forwards = false});
+  chassis.turnToHeading(-225, 500);
+  chassis.moveToPoint(-43, 15, 800, {.forwards = false});
+  tongue.set_value(false);
+  chassis.turnToHeading(0, 700);
+  wing.set_value(false);
+  chassis.moveToPoint(-43, 90, 2500);
+  chassis.turnToHeading(90, 500);
+  chassis.moveToPoint(-32, 90, 800);
+  chassis.turnToHeading(0, 500);
+  hood.set_value(false);
+  chassis.moveToPoint(-32, 70, 1500, {.forwards = false});
+  intakeLongGoal();
   pros::delay(2500);
-  chassis.moveToPoint(-42, 13, 700, {.forwards = false});
-  chassis.turnToHeading(-180, 500);
+  //get 2nd match loader
+  chassis.turnToHeading(0, 500);
+  intakeLoad();
+  tongue.set_value(true);
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPose(0, 34, 0, 1250, {.maxSpeed = 90});
+  pros::delay(3000);
+  chassis.moveToPose(0, -10, 0, 1000, {.forwards = false});
+  pros::delay(500);
+  intakeLongGoal();
+  pros::delay(2500);
+  intakeLoad();
+  //barrier crossing
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPoint(0, 18, 800);
+
+
+  /*
+  chassis.moveToPoint(-30, 80, 1100, {.forwards = false});
+  chassis.turnToHeading(0, 500);
+  chassis.waitUntilDone();
+  hood.set_value(false);
+  chassis.moveToPoint(-30, 60, 1000, {.forwards = false});
+  chassis.waitUntilDone();
+  intakeOuttake();
+  pros::delay(75);
+  intakeLongGoal();
+  tongue.set_value(true);*/
+
+
+  /*
+  //get second matchloader
+  pros::delay(5000);
+  intakeLoad();
+  chassis.turnToHeading(0, 250);
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPose(0, 27, 0, 900);
+  chassis.waitUntilDone();
+  pros::delay(2500);
+  chassis.moveToPoint(0, 0, 900);
+  intakeLongGoal();*/
+  
+
+  
+
 }
 
 void autonomous() {
