@@ -197,23 +197,21 @@ void elims() {
       {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
   chassis.waitUntil(18.9);
   tongue.set_value(true);
-  chassis.turnToHeading(127, 600, {.maxSpeed = 127});
+  chassis.turnToHeading(127, 500, {.maxSpeed = 127});
   // go to matchload pos
   chassis.moveToPoint(31.95, -2.24, 900, {.maxSpeed = 127});
   chassis.turnToHeading(180, 600);
   // enter matchload
-  chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed = 127});
+  chassis.moveToPose(33, -20, 180, 800, {.lead = 0.05, .maxSpeed = 127});
   chassis.waitUntilDone();
-  pros::delay(450);
+  pros::delay(400);
   // go to goal and score
-  chassis.moveToPose(33.5, 20, 180, 1200,
+  chassis.moveToPose(33.5, 20, 180, 900,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntil(15.5);
   chassis.waitUntilDone();
-  intakeOuttake();
-  pros::delay(250);
   intakeLongGoal();
-  pros::delay(1800);
+  pros::delay(1650);
   intakeLoad();
   tongue.set_value(false);
   // goes to wing pos and turns
@@ -222,9 +220,9 @@ void elims() {
   //  chassis.waitUntil(5);
   intakeHalt();
   wing.set_value(false);
-  chassis.moveToPose(20, 7, 0, 1200, {.maxSpeed = 127});
+  chassis.moveToPose(20, 7, 0, 1300, {.maxSpeed = 127});
   // go into wing
-  chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed = 127});
+  chassis.moveToPoint(19.7, 32, 800, {.maxSpeed = 127});
   chassis.waitUntilDone();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
