@@ -277,7 +277,7 @@ void quals() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
-void beatC() {
+void Rush() {
     //go to mid 3 and tongue
     wing.set_value(true);
     hood.set_value(false);
@@ -388,10 +388,17 @@ void skills() {
   
 
 }
-
+rd::Selector selector({
+    {"Best auton", sawp},
+    {"Simple auton", elims},
+    {"Beat C", Rush},
+    {"Good auton", quals},
+    {"Skills", skills}
+});
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   skills();
+  selector.run_auton();
 }
 
 void opcontrol() {
