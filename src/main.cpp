@@ -396,7 +396,7 @@ rd::Selector selector({
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   skills();
-  selector.run_auton();
+  //selector.run_auton();
 }
 
 void opcontrol() {
@@ -407,7 +407,7 @@ void opcontrol() {
   while (true) {
     int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-    chassis.arcade(leftY, rightX);
+    chassis.tank(leftY, rightX);
 
     if (master.get_digital(DIGITAL_R1)) {
       intakeCenterGoal();
