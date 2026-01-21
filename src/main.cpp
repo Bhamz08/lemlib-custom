@@ -220,9 +220,9 @@ void elims() {
   //  chassis.waitUntil(5);
   intakeHalt();
   wing.set_value(false);
-  chassis.moveToPose(20, 7, 0, 1200, {.maxSpeed = 127});
+  chassis.moveToPose(20, 7, 0, 1300, {.maxSpeed = 127});
   // go into wing
-  chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed = 127});
+  chassis.moveToPoint(19.7, 32, 800, {.maxSpeed = 127});
   chassis.waitUntilDone();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
