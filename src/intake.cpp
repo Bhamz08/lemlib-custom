@@ -7,14 +7,14 @@ pros::Motor lowerIntake(-3);
 pros::Motor upperIntake(-1);
 
 // intake speeds
-int lowerIntakeSpeed, upperIntakeSpeed;
+volatile int lowerIntakeSpeed, upperIntakeSpeed;
 
 // states
-bool loading = false;
-bool longGoalScoring = false;
-bool centerGoalScoring = false;
-bool outtaking = false;
-bool halted = false;
+volatile bool loading = false;
+volatile bool longGoalScoring = false;
+volatile bool centerGoalScoring = false;
+volatile bool outtaking = false;
+volatile bool halted = false;
 
 // anti jam timer
 u_int32_t lastCheckTime = pros::millis();
@@ -124,34 +124,34 @@ void asyncIntakeControl(void *param) {
     }
 
     // anti jam
-     if (pros::millis() - lastCheckTime > 1000) {
-       if (!halted) {
-         bool jammed = false;
-         // check if any motors are jammed while intaking
-         if (longGoalScoring || centerGoalScoring) {
-           if (fabs(upperIntake.get_actual_velocity()) < 3 ||
-               fabs(lowerIntake.get_actual_velocity()) < 3) {
-             upperIntake.move(-127);
-             lowerIntake.move(-127);
-             jammed = true;
-           }
-         } else if (outtaking) {
-           if (fabs(upperIntake.get_actual_velocity()) < 3 ||
-               fabs(lowerIntake.get_actual_velocity()) < 3) {
-             upperIntake.move(127);
-             lowerIntake.move(127);
-             jammed = true;
-           }
-         }
+    if (pros::millis() - lastCheckTime > 1000) {
+      if (!halted) {
+        bool jammed = false;
+        // check if any motors are jammed while intaking
+        if (longGoalScoring || centerGoalScoring) {
+          if (fabs(upperIntake.get_actual_velocity()) < 3 ||
+              fabs(lowerIntake.get_actual_velocity()) < 3) {
+            upperIntake.move(-127);
+            lowerIntake.move(-127);
+            jammed = true;
+          }
+        } else if (outtaking) {
+          if (fabs(upperIntake.get_actual_velocity()) < 3 ||
+              fabs(lowerIntake.get_actual_velocity()) < 3) {
+            upperIntake.move(127);
+            lowerIntake.move(127);
+            jammed = true;
+          }
+        }
 
-         if (jammed) {
-           // delay to let the "pulse" happen
-           pros::delay(75);
-           // reset timer
-           lastCheckTime = pros::millis();
-         }
-       }
-     }
+        if (jammed) {
+          // delay to let the "pulse" happen
+          pros::delay(75);
+          // reset timer
+          lastCheckTime = pros::millis();
+        }
+      }
+    }
 
     // delay
     pros::delay(20);
