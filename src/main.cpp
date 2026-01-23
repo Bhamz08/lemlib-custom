@@ -278,17 +278,17 @@ void Rush() {
       {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
   chassis.waitUntil(18.75);
   tongue.set_value(true);
-  chassis.turnToHeading(-127, 700, {.maxSpeed = 127});
+  //chassis.turnToHeading(-127, 700, {.maxSpeed = 127});
   // go to matchload pos
   //chassis.moveToPoint(33, 10, 900, {.maxSpeed = 127, .minSpeed = 20});
   //chassis.turnToHeading(180, 600);
   chassis.moveToPose(44, 30, -180, 1200,
                      {.forwards = false, .lead = 0.55, .maxSpeed = 127});
-  
   //chassis.turnToHeading(160, 600);
   chassis.moveToPoint(44, 50, 1000, {.forwards = false, .maxSpeed = 127});
-  chassis.waitUntilDone();
+  chassis.waitUntil(10);
   intakeLongGoal();
+  chassis.waitUntilDone();
   pros::delay(900);
   tongue.set_value(false);
   // goes to wing pos and turns
