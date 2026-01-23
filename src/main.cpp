@@ -401,7 +401,7 @@ rd::Selector selector({{"Best auton", sawp},
                        {"Skills", skills}});*/
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  skills();
+  Rush();
   // selector.run_auton();
 }
 
