@@ -128,8 +128,7 @@ void angpid() {
 void sawp() {
   wing.set_value(true);
   hood.set_value(false);
-  upperIntake.move(127);
-  lowerIntake.move(-127);
+  intakeLoad();
   chassis.setPose(0, 0, 0);
 
   // matchload 1
@@ -143,16 +142,14 @@ void sawp() {
   chassis.moveToPose(-20.25, 35.5, 90, 800,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  upperIntake.move(-127);
-  lowerIntake.move(-127);
+  intakeLongGoal();
   pros::delay(850);
 
   // turn to mid
   chassis.moveToPoint(-7, 32, 700, {.maxSpeed = 127});
   tongue.set_value(false);
   chassis.turnToHeading(225, 600);
-  upperIntake.move(127);
-  lowerIntake.move(-127);
+  intakeLoad();
   // go to mid
   chassis.moveToPoint(-24.5, 10.5, 900, {.maxSpeed = 127});
   chassis.waitUntil(19);
@@ -172,12 +169,9 @@ void sawp() {
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   lowerIntake.move(127);
-  pros::delay(150);
-  lowerIntake.move(-127);
-  upperIntake.move(-127);
+  intakeCenterGoal();
   pros::delay(550);
-  lowerIntake.move(-127);
-  upperIntake.move(127);
+  intakeLoad();
   hood.set_value(false);
   chassis.moveToPoint(2, -58, 1100, {.maxSpeed = 127});
   chassis.turnToHeading(90, 600);
@@ -187,51 +181,40 @@ void sawp() {
   chassis.moveToPose(-20, -58, 90, 800,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  upperIntake.move(-127);
-  lowerIntake.move(-127);
+  intakeLongGoal();
 }
 
 void elims() {
   // go to mid 3 and tongue
   wing.set_value(true);
   chassis.setPose(0, 0, 0);
-  upperIntake.move(127);
-  lowerIntake.move(-127);
+  intakeLoad();
   chassis.moveToPose(
-      7.41, 23.92, 38.63, 1000,
-      {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
-  chassis.waitUntil(18.9);
+      7.41, 23.92, 40, 1100,
+      {.lead = 0.23, .maxSpeed = 110, .minSpeed = 20, .earlyExitRange = 0.75});
+  chassis.waitUntil(18.75);
   tongue.set_value(true);
   chassis.turnToHeading(127, 600, {.maxSpeed = 127});
   // go to matchload pos
-  chassis.moveToPoint(31.95, -2.24, 900, {.maxSpeed = 127});
+  chassis.moveToPoint(31.5, -2.24, 900, {.maxSpeed = 127});
   chassis.turnToHeading(180, 600);
   // enter matchload
-  chassis.moveToPose(33, -20, 180, 900, {.lead = 0.05, .maxSpeed = 127});
+  chassis.moveToPose(33, -19, 180, 900, {.lead = 0.05, .maxSpeed = 127});
   chassis.waitUntilDone();
-  pros::delay(450);
+  pros::delay(425);
   // go to goal and score
-  chassis.moveToPose(33.5, 20, 180, 1200,
+  chassis.moveToPose(33.5, 19, 180, 1000,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntil(15.5);
   chassis.waitUntilDone();
-  lowerIntake.move(127);
-  pros::delay(250);
-  lowerIntake.move(-127);
-  upperIntake.move(-127);
-  pros::delay(1800);
-  upperIntake.move(127);
+  intakeLongGoal();
+  pros::delay(1700);
+  intakeLoad();
   tongue.set_value(false);
   // goes to wing pos and turns
-  //  chassis.moveToPoint(32.7, 5, 800, {.maxSpeed=127});
-  //  chassis.turnToHeading(302, 600, {.maxSpeed=127});
-  //  chassis.waitUntil(5);
-  lowerIntake.move(0);
-  upperIntake.move(0);
-  wing.set_value(false);
-  chassis.moveToPose(20, 7, 0, 1200, {.maxSpeed = 127});
+  wing.set_value(true);
+  chassis.moveToPose(21.5, 7, 355, 1500, {.maxSpeed = 127});
   // go into wing
-  chassis.moveToPoint(19.7, 32, 1000, {.maxSpeed = 127});
+  chassis.moveToPoint(21.75, 35, 1000, {.maxSpeed = 127});
   chassis.waitUntilDone();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
@@ -240,8 +223,7 @@ void quals() {
   // go to matchload and matchload
   wing.set_value(true);
   chassis.setPose(0, 0, 0);
-  upperIntake.move(127);
-  lowerIntake.move(-127);
+  intakeLoad();
   hood.set_value(false);
   chassis.moveToPoint(2, 32, 1200, {.maxSpeed = 127});
   chassis.turnToHeading(-90, 700);
@@ -253,14 +235,13 @@ void quals() {
   chassis.moveToPose(21.1, 30.5, -90, 800,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  lowerIntake.move(-127);
-  upperIntake.move(-127);
+  intakeLongGoal();
   pros::delay(1050);
   tongue.set_value(false);
   // go to middle 3
   chassis.moveToPoint(11, 30, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-213, 600);
-  upperIntake.move(127);
+  intakeLoad();
   // tongue
   chassis.moveToPoint(29.3, 8, 1200, {.maxSpeed = 127});
   chassis.waitUntil(21.57);
@@ -271,8 +252,7 @@ void quals() {
   chassis.moveToPose(48.5, -15, -47, 1200,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  lowerIntake.move(-110);
-  upperIntake.move(-95);
+  intakeCenterGoal();
   hood.set_value(true);
   pros::delay(750);
   hood.set_value(false);
@@ -289,31 +269,34 @@ void quals() {
 
 void Rush() {
   // go to mid 3 and tongue
-  wing.set_value(true);
+  wing.set_value(false);
   hood.set_value(false);
   chassis.setPose(0, 0, 0);
   intakeLoad();
   chassis.moveToPose(
-      7.67, 24, 38.63, 1000,
+      7.67, 24, 40, 1000,
       {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
-  chassis.waitUntil(18.9);
+  chassis.waitUntil(18.75);
   tongue.set_value(true);
-  chassis.turnToHeading(127, 600, {.maxSpeed = 127});
+  chassis.turnToHeading(-127, 700, {.maxSpeed = 127});
   // go to matchload pos
-  chassis.moveToPoint(33, 10, 900, {.maxSpeed = 127});
-  chassis.turnToHeading(180, 600);
-  chassis.moveToPose(37, 23, 180, 800,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+  //chassis.moveToPoint(33, 10, 900, {.maxSpeed = 127, .minSpeed = 20});
+  //chassis.turnToHeading(180, 600);
+  chassis.moveToPose(44, 30, -180, 1200,
+                     {.forwards = false, .lead = 0.55, .maxSpeed = 127});
+  
+  //chassis.turnToHeading(160, 600);
+  chassis.moveToPoint(44, 50, 1000, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
-  pros::delay(800);
+  pros::delay(900);
   tongue.set_value(false);
   // goes to wing pos and turns
   intakeHalt();
-  wing.set_value(false);
-  chassis.moveToPose(44, 7, 180, 1000, {.maxSpeed = 127});
+  wing.set_value(true);
+  chassis.moveToPose(45, 7, 185, 1000, {.maxSpeed = 127});
   // go into wing
-  chassis.moveToPoint(44, 38, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(45, 38, 1000, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
@@ -413,6 +396,7 @@ void opcontrol() {
   while (true) {
     int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+    int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
     chassis.arcade(leftY, rightX);
 
     if (master.get_digital(DIGITAL_R1)) {
