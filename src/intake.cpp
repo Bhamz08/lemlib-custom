@@ -38,7 +38,7 @@ void setIntake(int lowerSpeed, int upperSpeed) {
 void intakeLoad() {
   // speed
   lowerIntakeSpeed = 127;
-  upperIntakeSpeed = -80;
+  upperIntakeSpeed = -95;
 
   // states
   if (!loading)
