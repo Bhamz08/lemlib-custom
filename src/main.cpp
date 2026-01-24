@@ -225,46 +225,43 @@ void quals() {
   chassis.setPose(0, 0, 0);
   intakeLoad();
   hood.set_value(false);
-  chassis.moveToPoint(2, 32, 1200, {.maxSpeed = 127});
-  chassis.turnToHeading(-90, 700);
   tongue.set_value(true);
+  chassis.moveToPoint(0, 32, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(-90, 700);
   chassis.moveToPose(-12, 30, -90, 800, {.lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  pros::delay(517);
+  pros::delay(325);
   // go to long goal
-  chassis.moveToPose(21.1, 30.5, -90, 800,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+  chassis.moveToPose(22, 30, -90, 800,{.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
-  pros::delay(1050);
+  pros::delay(1000);
   tongue.set_value(false);
   // go to middle 3
-  chassis.moveToPoint(11, 30, 700, {.maxSpeed = 127});
-  chassis.turnToHeading(-213, 600);
+  chassis.moveToPoint(14, 30, 800, {.maxSpeed = 127});
+  chassis.turnToHeading(-206, 600);
   intakeLoad();
   // tongue
-  chassis.moveToPoint(29.3, 8, 1200, {.maxSpeed = 127});
-  chassis.waitUntil(21.57);
+  chassis.moveToPoint(27.5, 10, 1100, {.maxSpeed = 127});
+  chassis.waitUntil(18.85);
   tongue.set_value(true);
   chassis.waitUntilDone();
   chassis.turnToHeading(-47, 800, {.maxSpeed = 127});
-  // go to mid goal and score
-  chassis.moveToPose(48.5, -15, -47, 1200,
-                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+  //go to mid goal and score
+  chassis.moveToPose(45.25, -15.65, -47, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeCenterGoal();
-  hood.set_value(true);
-  pros::delay(750);
-  hood.set_value(false);
   tongue.set_value(false);
-  wing.set_value(false);
-  // go to wing pos
-  chassis.moveToPoint(23.27, 13, 1000, {.maxSpeed = 127});
+  pros::delay(400);
+  intakeLoad();
+  wing.set_value(true);
+  // // go to wing pos
+  chassis.moveToPoint(23.27, 11.25, 1000, {.maxSpeed = 127});
   chassis.waitUntilDone();
   chassis.turnToHeading(-90, 700);
-  chassis.moveToPoint(47, 13, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(48, 11.25, 800, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
-  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  // chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 void Rush() {
@@ -282,21 +279,20 @@ void Rush() {
   // go to matchload pos
   //chassis.moveToPoint(33, 10, 900, {.maxSpeed = 127, .minSpeed = 20});
   //chassis.turnToHeading(180, 600);
-  chassis.moveToPose(44, 30, -180, 1200,
-                     {.forwards = false, .lead = 0.55, .maxSpeed = 127});
+  chassis.moveToPose(44, 30, -180, 1200, {.forwards = false, .lead = 0.55, .maxSpeed = 127});
   //chassis.turnToHeading(160, 600);
-  chassis.moveToPoint(44, 50, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(44, 50, 850, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntil(10);
   intakeLongGoal();
   chassis.waitUntilDone();
-  pros::delay(900);
+  pros::delay(700);
   tongue.set_value(false);
   // goes to wing pos and turns
   intakeHalt();
   wing.set_value(true);
   chassis.moveToPose(45, 7, 185, 1000, {.maxSpeed = 127});
   // go into wing
-  chassis.moveToPoint(45, 38, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(45, 42, 1000, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
@@ -384,7 +380,7 @@ rd::Selector selector({{"Best auton", sawp},
                        {"Skills", skills}});*/
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  Rush();
+  quals();
   // selector.run_auton();
 }
 
