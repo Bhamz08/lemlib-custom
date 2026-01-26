@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Elsisi",
+    "project_name": "Maduro",
     "target": "v5",
     "templates": {
       "LemLib": {
