@@ -11,6 +11,8 @@
 #include "pros/rtos.hpp"
 #include "robodash/api.h"
 #include "subsystems.hpp"
+#include <vector>
+
 
 // controller
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -139,8 +141,7 @@ void sawp() {
   chassis.waitUntilDone();
   pros::delay(400);
   // go to long goal
-  chassis.moveToPoint(-24, 35, 800,
-                     {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(-24, 35, 800, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
   pros::delay(850);
@@ -164,23 +165,22 @@ void sawp() {
   chassis.waitUntilDone();
   hood.set_value(true);
   chassis.turnToHeading(128, 700, {.maxSpeed = 127});
-  
+
   // go to mid goal and score
-  chassis.moveToPose(-37.5, -22, 128, 1000,
+  chassis.moveToPose(-37.5, -19, 128, 1000,
                      {.forwards = false, .lead = 0.2, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeCenterGoal();
-  pros::delay(600);
+  pros::delay(750);
   intakeLoad();
   chassis.moveToPoint(2.5, -59, 1100, {.maxSpeed = 127});
 
   chassis.turnToHeading(90, 600);
-  chassis.moveToPose(14, -59, 90, 800, {.lead = 0.1, .maxSpeed = 127});
+  chassis.moveToPose(13, -56, 90, 800, {.lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   hood.set_value(false);
   pros::delay(380);
-  chassis.moveToPoint(-26, -59, 800,
-                     {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(-26, -56, 800, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
 }
@@ -233,7 +233,8 @@ void quals() {
   chassis.waitUntilDone();
   pros::delay(325);
   // go to long goal
-  chassis.moveToPose(22, 30, -90, 800,{.forwards = false, .lead = 0.1, .maxSpeed = 127});
+  chassis.moveToPose(22, 30, -90, 800,
+                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
   pros::delay(1000);
@@ -248,8 +249,9 @@ void quals() {
   tongue.set_value(true);
   chassis.waitUntilDone();
   chassis.turnToHeading(-47, 800, {.maxSpeed = 127});
-  //go to mid goal and score
-  chassis.moveToPose(45.25, -15.65, -47, 1200, {.forwards = false, .lead = 0.1, .maxSpeed = 127});
+  // go to mid goal and score
+  chassis.moveToPose(45.25, -15.65, -47, 1200,
+                     {.forwards = false, .lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeCenterGoal();
   tongue.set_value(false);
@@ -276,12 +278,13 @@ void Rush() {
       {.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
   chassis.waitUntil(18.75);
   tongue.set_value(true);
-  //chassis.turnToHeading(-127, 700, {.maxSpeed = 127});
-  // go to matchload pos
-  //chassis.moveToPoint(33, 10, 900, {.maxSpeed = 127, .minSpeed = 20});
-  //chassis.turnToHeading(180, 600);
-  chassis.moveToPose(44, 30, -180, 1200, {.forwards = false, .lead = 0.55, .maxSpeed = 127});
-  //chassis.turnToHeading(160, 600);
+  // chassis.turnToHeading(-127, 700, {.maxSpeed = 127});
+  //  go to matchload pos
+  // chassis.moveToPoint(33, 10, 900, {.maxSpeed = 127, .minSpeed = 20});
+  // chassis.turnToHeading(180, 600);
+  chassis.moveToPose(44, 30, -180, 1200,
+                     {.forwards = false, .lead = 0.55, .maxSpeed = 127});
+  // chassis.turnToHeading(160, 600);
   chassis.moveToPoint(44, 50, 850, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntil(10);
   intakeLongGoal();
@@ -315,10 +318,10 @@ void skills() {
   pros::delay(420);
   intakeLoad();
   // get matchloader
-  chassis.moveToPoint(-31, 0, 1250, {.maxSpeed = 127});
+  chassis.moveToPoint(-31, 0, 1250, {.maxSpeed = 110});
   chassis.turnToHeading(-180, 400);
   tongue.set_value(true);
-  chassis.moveToPoint(-31, -14.75, 800);
+  chassis.moveToPoint(-31, -15.5, 800);
   // score on long goal
   pros::delay(2100);
   chassis.moveToPoint(-31, 0, 1100, {.forwards = false});
@@ -329,26 +332,42 @@ void skills() {
   setIntake(0, 0);
   chassis.turnToHeading(0, 700);
   wing.set_value(false);
-  chassis.moveToPoint(-43, 90, 2500);
+  chassis.moveToPoint(-47, 90, 2500);
   chassis.turnToHeading(90, 500);
   hood.set_value(false);
-  chassis.moveToPoint(-35, 93, 800);
+  chassis.moveToPoint(-37, 93, 800);
   chassis.turnToHeading(0, 600);
-  chassis.moveToPose(-37, 75, 0, 2000, {.forwards = false});
+  chassis.moveToPose(-39, 60, 0, 2000, {.forwards = false});
   pros::delay(1000);
   intakeLongGoal();
   tongue.set_value(true);
   pros::delay(2000);
-  chassis.turnToHeading(7, 600);
+  chassis.turnToHeading(5, 600);
   intakeLoad();
   // get second matchloader
   chassis.setPose(0, 0, 0);
-  chassis.moveToPose(0, 36, 0, 2000);
+  chassis.moveToPose(0, 40, 0, 2000);
   pros::delay(3000);
-  chassis.moveToPose(0, -1, 0, 1500, {.forwards = false});
-  pros::delay(1500);
+  chassis.moveToPose(0, -30, 0, 1500, {.forwards = false});
+  pros::delay(1000);
   intakeLongGoal();
+  tongue.set_value(false);
+  pros::delay(3000);
+  //barrier cross
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPoint(0, 23, 800);
+  chassis.turnToHeading(60, 600);
+  chassis.moveToPose(32, 34, 90, 1200, {.minSpeed = 70});
+  //cross
+  intakeLoad();
+  chassis.moveToPoint(100, 34, 3000, {.maxSpeed = 80});
+  //wall reset
+  chassis.moveToPose(67, 29, 90, 800, {.forwards = false});
+  chassis.turnToHeading(180, 600);
+  chassis.moveToPoint(67, 50, 900, {.forwards = false});
+  chassis.setPose(0, 0, 0);
 
+  
   /*
   chassis.moveToPoint(-30, 80, 1100, {.forwards = false});
   chassis.turnToHeading(0, 500);
@@ -381,7 +400,7 @@ rd::Selector selector({{"Best auton", sawp},
                        {"Skills", skills}});*/
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  sawp();
+  skills();
   // selector.run_auton();
 }
 
@@ -422,13 +441,35 @@ void opcontrol() {
     }
 
     // Heat sensing
-    double temp = lowerIntake.get_temperature();
+    double intakeTemp = lowerIntake.get_temperature();
+
+    // Drive Heat sensing
+    std::vector<double> leftTemps = leftMotors.get_temperature_all();
+    std::vector<double> rightTemps = rightMotors.get_temperature_all();
+    double driveTotalTemp = 0;
+    int motorCount = 0;
+    for (double t : leftTemps) {
+      if (t != PROS_ERR_F) {
+        driveTotalTemp += t;
+        motorCount++;
+      }
+    }
+    for (double t : rightTemps) {
+      if (t != PROS_ERR_F) {
+        driveTotalTemp += t;
+        motorCount++;
+      }
+    }
+    double driveAvgTemp = (motorCount > 0) ? (driveTotalTemp / motorCount) : 0;
+
     // print interval
     if (pros::millis() % 200 < 15) {
-      master.print(0, 0, "Intake Temp: %.0fC", temp);
+      master.print(0, 0, "Intake Temp: %.0fC", intakeTemp);
+      pros::delay(50);
+      master.print(1, 0, "Drive Temp: %.0fC", driveAvgTemp);
     }
     // vibration warning
-    if (temp > 45 && pros::millis() % 1000 < 15) {
+    if ((intakeTemp > 45 || driveAvgTemp > 45) && pros::millis() % 1000 < 15) {
       master.rumble("---");
     }
 
