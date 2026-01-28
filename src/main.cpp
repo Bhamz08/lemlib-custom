@@ -302,13 +302,13 @@ void Rush() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
-void skills() {
+void skills() { 
   wing.set_value(true);
   hood.set_value(true);
   chassis.setPose(0, 0, 0);
   intakeLoad();
   // intake center goal blocks
-  chassis.moveToPoint(0, 15, 700, {.maxSpeed = 127});
+  chassis.moveToPoint(0, 13, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-45, 600);
   chassis.moveToPoint(-8, 22, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-140, 600);
@@ -337,9 +337,9 @@ void skills() {
   chassis.turnToHeading(90, 500);
   hood.set_value(false);
   //score on long goal
-  chassis.moveToPoint(-40, 93, 800);
+  chassis.moveToPoint(-38, 93, 800);
   chassis.turnToHeading(0, 600);
-  chassis.moveToPose(-40, 60, 0, 2000, {.forwards = false});
+  chassis.moveToPose(-38, 60, 0, 2000, {.forwards = false});
   pros::delay(1000);
   intakeLongGoal();
   tongue.set_value(true);
@@ -362,12 +362,10 @@ void skills() {
   chassis.moveToPose(32, 34, 90, 1200, {.minSpeed = 70});
   //cross
   intakeLoad();
-  chassis.moveToPoint(100, 34, 3000, {.maxSpeed = 80});
-  //wall reset
-  chassis.moveToPose(67, 29, 90, 800, {.forwards = false});
-  chassis.turnToHeading(180, 600);
-  chassis.moveToPoint(67, 50, 900, {.forwards = false});
-  chassis.setPose(0, 0, 0);
+  chassis.moveToPoint(95, 34, 3000, {.maxSpeed = 80});
+  //barrier reset
+  chassis.moveToPose(60, 34, 90, 2500, {.forwards = false, .maxSpeed = 60});
+  
 
   
   /*
