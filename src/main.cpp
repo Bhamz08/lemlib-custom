@@ -181,7 +181,7 @@ void sawp() {
   chassis.waitUntilDone();
   hood.set_value(false);
   pros::delay(300);
-  chassis.moveToPoint(-22, -56, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(-30, -56, 800, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
 }
@@ -250,6 +250,7 @@ void quals() {
   tongue.set_value(true);
   chassis.waitUntilDone();
   chassis.turnToHeading(-47, 800, {.maxSpeed = 127});
+  hood.set_value(true);
   // go to mid goal and score
   chassis.moveToPose(45.25, -15.65, -47, 1200,
                      {.forwards = false, .lead = 0.1, .maxSpeed = 127});
@@ -286,8 +287,8 @@ void Rush() {
   chassis.moveToPose(44, 30, -180, 1200,
                      {.forwards = false, .lead = 0.55, .maxSpeed = 127});
   // chassis.turnToHeading(160, 600);
-  chassis.moveToPoint(44, 50, 850, {.forwards = false, .maxSpeed = 127});
-  chassis.waitUntil(10);
+  chassis.swingToHeading(90, DriveSide::RIGHT, 800,{.minSpeed = 127});
+  chassis.waitUntil(12);
   intakeLongGoal();
   chassis.waitUntilDone();
   pros::delay(700);
@@ -295,9 +296,9 @@ void Rush() {
   // goes to wing pos and turns
   intakeHalt();
   wing.set_value(true);
-  chassis.moveToPose(45, 7, 185, 1000, {.maxSpeed = 127});
+  chassis.moveToPose(44, 7, 185, 1000, {.maxSpeed = 127});
   // go into wing
-  chassis.moveToPoint(45, 42, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(44, 45, 1500, {.forwards = false, .maxSpeed = 110});
   chassis.waitUntilDone();
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
@@ -308,7 +309,7 @@ void skills() {
   chassis.setPose(0, 0, 0);
   intakeLoad();
   // intake center goal blocks
-  chassis.moveToPoint(0, 13, 700, {.maxSpeed = 127});
+  chassis.moveToPoint(0, 15, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-45, 600);
   chassis.moveToPoint(-8, 22, 700, {.maxSpeed = 127});
   chassis.turnToHeading(-140, 600);
@@ -400,7 +401,7 @@ rd::Selector selector({{"Best auton", sawp},
                        {"Skills", skills}});*/
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  skills();
+  Rush();
   // selector.run_auton();
 }
 
