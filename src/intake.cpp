@@ -38,7 +38,7 @@ void setIntake(int lowerSpeed, int upperSpeed) {
 void intakeLoad() {
   // speed
   lowerIntakeSpeed = 127;
-  upperIntakeSpeed = -95;
+  upperIntakeSpeed = -90;
 
   // states
   if (!loading)
@@ -52,8 +52,8 @@ void intakeLoad() {
 
 void intakeCenterGoal() {
   // speed
-  lowerIntakeSpeed = 110;
-  upperIntakeSpeed = 90;
+  lowerIntakeSpeed = 105;
+  upperIntakeSpeed = 95;
 
   // states
   if (!centerGoalScoring)
