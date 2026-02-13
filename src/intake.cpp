@@ -50,10 +50,10 @@ void intakeLoad() {
   halted = false;
 }
 
-void intakeCenterGoal() {
+void intakeLongGoal() {
   // speed
-  lowerIntakeSpeed = 105;
-  upperIntakeSpeed = 95;
+  lowerIntakeSpeed = 127;
+  upperIntakeSpeed = 127;
 
   // states
   if (!centerGoalScoring)
@@ -65,10 +65,10 @@ void intakeCenterGoal() {
   halted = false;
 }
 
-void intakeLongGoal() {
+void intakeCenterGoal() {
   // speed
-  lowerIntakeSpeed = 127;
-  upperIntakeSpeed = 127;
+  lowerIntakeSpeed = 105;
+  upperIntakeSpeed = 95;
 
   // states
   if (!longGoalScoring)
