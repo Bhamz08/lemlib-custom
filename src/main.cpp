@@ -12,17 +12,18 @@
 #include "robodash/api.h"
 #include "subsystems.hpp"
 #include <vector>
+#include "auton.hpp"
 
 
 // controller
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-pros::MotorGroup leftMotors({-12, -10, 9}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({15, 8, -18}, pros::MotorGearset::blue);
+pros::MotorGroup leftMotors({-15, -13, 14}, pros::MotorGearset::blue);
+pros::MotorGroup rightMotors({17, 20, -18}, pros::MotorGearset::blue);
 
 // Inertial Sensor on port 10
-pros::Imu imu(14);
+pros::Imu imu(2);
 
 // drivetrain settings
 lemlib::Drivetrain
@@ -74,45 +75,22 @@ lemlib::ExpoDriveCurve steerCurve(3, 10, 1.019);
 lemlib::Chassis chassis(drivetrain, lateral_controller, angularController,
                         sensors, &throttleCurve, &steerCurve);
 
-void cdrift(float lV, float rV, int timeout, bool cst) {
-  if (cst) {
-    leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
-    rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
-  } else {
-    leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
-    rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE);
-  }
-  leftMotors.move(lV);
-  rightMotors.move(rV);
-  pros::delay(timeout);
-  leftMotors.brake();
-  rightMotors.brake();
-}
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- */
-void initialize() {
-  // intake control
-  pros::Task intakeTask(asyncIntakeControl);
 
-  pros::lcd::initialize(); // initialize brain screen
-  chassis.calibrate();     // calibrate sensors
-
-  // print position to brain screen
-  pros::Task screen_task([&]() {
-    while (true) {
-      pros::lcd::print(0, "X: %f", chassis.getPose().x);
-      pros::lcd::print(1, "Y: %f", chassis.getPose().y);
-      pros::lcd::print(2, "Theta: %f", chassis.getPose().theta);
-      pros::delay(20);
+namespace Misc{
+    void cdrift(float lV, float rV, int timeout, bool cst = true){
+        (cst == true) ? (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST), rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST)) : (leftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE), rightMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_BRAKE));
+        leftMotors.move(lV);
+        rightMotors.move(rV);
+        pros::delay(timeout);
+        leftMotors.brake();
+        rightMotors.brake();
     }
-  });
-}
-
-void disabled() {}
-
-void competition_initialize() {}
+    void cdrift(float lV, float rV){
+        leftMotors.move(lV);
+        rightMotors.move(rV);
+    }
+  }
 
 void linpid() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
@@ -129,7 +107,7 @@ void angpid() {
 
 void sawp() {
   wing.set_value(true);
-  hood.set_value(false);
+  hood.set_value(true);
   intakeLoad();
   chassis.setPose(0, 0, 0);
 
@@ -137,51 +115,48 @@ void sawp() {
   chassis.moveToPoint(0, 28.5, 800, {.maxSpeed = 127});
   chassis.turnToHeading(90, 600);
   tongue.set_value(true);
-  chassis.moveToPose(14, 33.5, 90, 800, {.lead = 0.1, .maxSpeed = 127});
+  chassis.moveToPose(14, 32.5, 90, 800, {.lead = 0.1, .maxSpeed = 127});
   chassis.waitUntilDone();
-  pros::delay(285);
+  pros::delay(245);
   // go to long goal
-  chassis.moveToPoint(-24, 34.5, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(-23, 31, 850, {.forwards = false, .maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
   pros::delay(875);
-
-  // turn to mid
-  chassis.moveToPoint(-7, 32, 700, {.maxSpeed = 127});
-  tongue.set_value(false);
-  chassis.turnToHeading(215, 600);
   intakeLoad();
-  // go to mid
-  chassis.moveToPoint(-24.5, 10.5, 800, {.maxSpeed = 127});
-  chassis.waitUntil(19);
-  tongue.set_value(true);
-  chassis.waitUntilDone();
-  chassis.turnToHeading(-181, 600);
   tongue.set_value(false);
-  // second mid
-  chassis.moveToPoint(-24.5, -38, 1200, {.maxSpeed = 127});
-  chassis.waitUntil(27.95);
+
+  // // turn to mid and go to second mid stack
+  chassis.turnToHeading(182, 800);
+  chassis.moveToPoint(-21, -36, 1700, {.maxSpeed = 127});
+  chassis.waitUntil(43.5);
   tongue.set_value(true);
   chassis.waitUntilDone();
   hood.set_value(true);
-  chassis.turnToHeading(128, 550, {.maxSpeed = 127});
+  chassis.turnToHeading(128, 600, {.maxSpeed = 127});
 
-  // go to mid goal and score
-  chassis.moveToPose(-38, -19, 128, 1000,
-                     {.forwards = false, .lead = 0.2, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  intakeCenterGoal();
-  pros::delay(550);
-  intakeLoad();
-  chassis.moveToPoint(-2, -60, 1200, {.maxSpeed = 127});
+
+  // //go to long goal and score
+  chassis.moveToPoint(-10, -60, 900, {.maxSpeed = 127});
   chassis.turnToHeading(90, 600);
-  chassis.moveToPose(19.5, -60, 90, 800, {.lead = 0.1, .maxSpeed = 127});
-  chassis.waitUntilDone();
-  hood.set_value(false);
-  pros::delay(285);
-  chassis.moveToPose(-25, -61, 90, 900, {.forwards = false, .lead = 0.1,.maxSpeed = 127});
+  chassis.moveToPose(-25, -61, 90, 750, {.forwards = false, .lead = 0.1,.maxSpeed = 127});
   chassis.waitUntilDone();
   intakeLongGoal();
+  pros::delay(900);
+
+  // //go to matchload
+  // chassis.moveToPose(19.5, -60, 90, 1000, {.lead = 0.1, .maxSpeed = 127});
+  // chassis.waitUntilDone();
+  // tongue.set_value(true);
+  // pros::delay(400);
+  
+  // //go to mid goal
+  // hood.set_value(true);
+  // chassis.moveToPose(-38, -19, 128, 1800,
+  //                    {.forwards = false, .lead = 0.4, .maxSpeed = 127});
+  // chassis.waitUntilDone();
+  // pros::delay(550);  
+  // intakeLoad();
 }
 
 void elims() {
@@ -292,6 +267,165 @@ void Rush() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
+void leftMiddle(){
+            chassis.setPose(48,-15,270);
+            wing.set_value(true);
+            hood.set_value(true);
+            intakeLoad();
+            chassis.moveToPoint(22,-22.5,1750,{.forwards=true,.maxSpeed=127,.minSpeed=10,.earlyExitRange=1});
+            chassis.waitUntil(7.1);
+            tongue.set_value(true);
+            chassis.waitUntilDone();
+            chassis.moveToPoint(7,-7,1000,{.forwards=false,.maxSpeed=127,.minSpeed=10,.earlyExitRange=1});
+            chassis.waitUntilDone();
+            intakeCenterGoal();
+            pros::delay(500);
+            intakeLoad();
+            hood.set_value(false);
+
+            //matchload
+            chassis.moveToPose(63,-48,90,1500,{.forwards=true,.horizontalDrift=8,.lead=0.47,.maxSpeed=127,.minSpeed=0,.earlyExitRange=0});
+            chassis.waitUntilDone();
+            //long goal
+            chassis.moveToPoint(27,-48,1250,{.forwards=false,.maxSpeed=90,.minSpeed=0,.earlyExitRange=3});
+            chassis.waitUntil(16);
+            intakeLongGoal();
+            chassis.waitUntilDone();
+            tongue.set_value(true);
+            intakeLoad();
+
+            chassis.turnToHeading(125,700,{.maxSpeed=127,.minSpeed=20,.earlyExitRange=3});
+            chassis.waitUntilDone();
+            wing.set_value(true);
+            chassis.moveToPose(11,-36.5,90,1500,{.forwards=false,.horizontalDrift=8,.lead=0.45,.maxSpeed=80,.minSpeed=0,.earlyExitRange=0}); 
+            chassis.waitUntilDone();
+            chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+
+          
+}
+
+void wingAWP(){
+            chassis.setPose(53,18,0);
+            intakeLoad();
+            wing.set_value(true);
+            hood.set_value(false);
+            chassis.moveToPoint(53,44,1200,{.forwards=true,.maxSpeed=127,.minSpeed=10,.earlyExitRange=1.5});
+            chassis.waitUntil(15);
+            tongue.set_value(true);
+            chassis.waitUntilDone();
+            Misc::cdrift(10,-10,50);
+
+            chassis.turnToPoint(65,47.4,800,{.forwards=true,.maxSpeed=127,.minSpeed=5,.earlyExitRange=1.5});
+            chassis.waitUntilDone();
+            Misc::cdrift(55,55,110);
+            
+            Misc::cdrift(40,40,670);
+
+          //score long
+            chassis.moveToPoint(32,49.2,950,{.forwards=false,.maxSpeed=85,.minSpeed=0,.earlyExitRange=3});
+            chassis.waitUntil(16);
+            intakeLongGoal();
+            chassis.waitUntilDone();
+
+            Misc::cdrift(-20,-20,450);
+            tongue.set_value(true);
+            Misc::cdrift(-20,-20,250);
+            intakeLoad();
+            Misc::cdrift(95,55,200);
+
+            //first mid goal
+            chassis.moveToPoint(26.2,26,1250,{.forwards=true,.maxSpeed=127,.minSpeed=10,.earlyExitRange=3});
+            chassis.waitUntilDone();
+            Misc::cdrift(-10,80,50);
+
+            //second mid goal
+            chassis.moveToPoint(24,-19,1150,{.forwards=true,.maxSpeed=127,.minSpeed=15,.earlyExitRange=1.5});
+            chassis.waitUntilDone();
+            Misc::cdrift(-10,80,50);
+          
+
+
+            //go to second long
+            chassis.moveToPoint(48,-43.5,1100,{.forwards=true,.maxSpeed=127,.minSpeed=10,.earlyExitRange=2});
+            chassis.waitUntilDone();
+            Misc::cdrift(10,20,50);
+            Misc::cdrift(-15,-10,50);
+
+
+            //second mathcload
+            chassis.moveToPoint(30,-45.8,800,{.forwards=false,.maxSpeed=90,.minSpeed=10,.earlyExitRange=3});
+            chassis.waitUntil(13);
+            intakeLongGoal();
+            chassis.waitUntilDone();
+            Misc::cdrift(-20,-20,600);
+            tongue.set_value(true);
+            Misc::cdrift(-20,-20,600);
+            intakeLoad();
+
+            //go into mathcload
+            chassis.moveToPoint(55.5,-45.5,700,{.forwards=true,.maxSpeed=90,.minSpeed=0,.earlyExitRange=2});
+            chassis.waitUntilDone();
+            Misc::cdrift(45,45,700);
+            
+
+            //mid goal
+            chassis.moveToPoint(12,-2,1250,{.forwards=false,.maxSpeed=127,.minSpeed=0,.earlyExitRange=3}); // 7,4.5
+            chassis.waitUntil(24);
+            tongue.set_value(true);
+            chassis.waitUntilDone();
+            
+            intakeCenterGoal();
+            Misc::cdrift(-35,-35,150);
+            Misc::cdrift(-10,-10,600);
+
+            intakeLoad();
+
+            //wing
+            chassis.moveToPoint(35,-29,1250,{.forwards=true,.maxSpeed=127,.minSpeed=10,.earlyExitRange=3});
+            chassis.turnToHeading(89,600,{.maxSpeed=127,.minSpeed=10,.earlyExitRange=2});
+            chassis.waitUntilDone();
+            wing.set_value(true);
+            chassis.moveToPoint(21,-31,1750,{.forwards=false,.maxSpeed=127,.minSpeed=10,.earlyExitRange=2});
+            chassis.turnToHeading(125,800,{.maxSpeed=127,.minSpeed=0,.earlyExitRange=2});
+            chassis.waitUntilDone();
+            Misc::cdrift(0,-15);
+            chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+}
+        
+void rightseven(){
+            chassis.setPose(48,15,270);
+            wing.set_value(true);
+            intakeLoad();
+            chassis.moveToPoint(22,22.5,1750,{.forwards=true,.maxSpeed=127,.minSpeed=10,.earlyExitRange=1});
+            chassis.waitUntil(7.1);
+            tongue.set_value(true);
+            chassis.waitUntilDone();
+            chassis.turnToPoint(58,41,400,{.maxSpeed=90,.minSpeed=10,.earlyExitRange=0});
+            chassis.moveToPose(64,47.5,90,1500,{.forwards=true,.horizontalDrift=8,.lead=0.45,.maxSpeed=80,.minSpeed=0,.earlyExitRange=0}); // 65 47
+            chassis.waitUntilDone();
+            Misc::cdrift(30,30,500);
+            chassis.moveToPoint(25,47.5,1150,{.forwards=false,.maxSpeed=90,.minSpeed=0,.earlyExitRange=3});
+            chassis.waitUntil(16);
+            intakeLongGoal();
+            chassis.waitUntilDone();
+            Misc::cdrift(-20,-20,850);
+            tongue.set_value(false);
+            Misc::cdrift(-20,-20,700);
+            intakeLoad();
+
+            
+
+            Misc::cdrift(70,70,390);
+            chassis.turnToHeading(125,700,{.maxSpeed=127,.minSpeed=20,.earlyExitRange=3});
+            chassis.waitUntilDone();
+            tongue.set_value(false);
+            chassis.moveToPose(11,59,90,1500,{.forwards=false,.horizontalDrift=8,.lead=0.45,.maxSpeed=80,.minSpeed=0,.earlyExitRange=0}); 
+            chassis.waitUntilDone();
+            Misc::cdrift(0,-15);
+            chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+
+}
+
 void skills() {
   wing.set_value(true);
   hood.set_value(true);
@@ -384,6 +518,31 @@ void skills() {
   chassis.moveToPoint(0, 0, 900);
   intakeLongGoal();*/
 }
+/**
+ * Runs initialization code. This occurs as soon as the program is started.
+ */
+void initialize() {
+  // intake control
+  pros::Task intakeTask(asyncIntakeControl);
+
+  pros::lcd::initialize(); // initialize brain screen
+  chassis.calibrate();     // calibrate sensors
+
+  // print position to brain screen
+  pros::Task screen_task([&]() {
+    while (true) {
+      pros::lcd::print(0, "X: %f", chassis.getPose().x);
+      pros::lcd::print(1, "Y: %f", chassis.getPose().y);
+      pros::lcd::print(2, "Theta: %f", chassis.getPose().theta);
+      pros::delay(20);
+    }
+  });
+}
+
+void disabled() {}
+
+void competition_initialize() {}
+
 /*
 rd::Selector selector({{"Best auton", sawp},
                        {"Simple auton", elims},
@@ -399,7 +558,7 @@ void autonomous() {
 void opcontrol() {
   bool tongue_state = false;
   bool wing_state = false;
-  bool hood_state = false;
+  bool hood_state = true;
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
   while (true) {
     int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
