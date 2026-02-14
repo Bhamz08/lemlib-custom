@@ -3,7 +3,7 @@
 #include "subsystems.hpp"
 
 // intake motors
-pros::Motor lowerIntake(-3);
+pros::Motor lowerIntake(-8);
 pros::Motor upperIntake(-1);
 
 // intake speeds

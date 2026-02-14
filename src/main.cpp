@@ -12,7 +12,7 @@
 #include "robodash/api.h"
 #include "subsystems.hpp"
 #include <vector>
-#include "auton.hpp"
+
 
 
 // controller
@@ -243,11 +243,11 @@ void quals() {
 void Rush() {
   // go to mid 3 and tongue
   wing.set_value(true);
-  hood.set_value(false);
+  hood.set_value(true);
   chassis.setPose(0, 0, 0);
   intakeLoad();
-  chassis.moveToPose(7.67, 24, 40, 1100,{.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
-  chassis.waitUntil(18.75);
+  chassis.moveToPose(7.67, 29, 40, 1100,{.lead = 0.23, .maxSpeed = 127, .minSpeed = 20, .earlyExitRange = 0.75});
+  chassis.waitUntil(14);
   tongue.set_value(true);
   //  go to matchload pos
   chassis.moveToPose(44, 29.75, -180, 1100,{.forwards = false, .lead = 0.55, .maxSpeed = 127});
@@ -551,7 +551,7 @@ rd::Selector selector({{"Best auton", sawp},
                        {"Skills", skills}});*/
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  sawp();
+  Rush();
   // selector.run_auton();
 }
 
