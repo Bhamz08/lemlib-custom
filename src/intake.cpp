@@ -82,8 +82,8 @@ void intakeCenterGoal() {
 
 void intakeOuttake() {
   // speed
-  lowerIntakeSpeed = -127;
-  upperIntakeSpeed = -127;
+  lowerIntakeSpeed = -90;
+  upperIntakeSpeed = -90;
 
   // states
   if (!outtaking)
