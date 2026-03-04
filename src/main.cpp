@@ -12,7 +12,7 @@
 #include "robodash/api.h"
 #include "subsystems.hpp"
 #include <vector>
-#include "auton.hpp"
+//#include "auton.hpp"
 
 
 // controller
@@ -443,6 +443,7 @@ void Rush() {
 }
 
 void skills() {
+  /*
   wing.set_value(true);
   hood.set_value(true);
   chassis.setPose(0, 0, 0);
@@ -478,7 +479,64 @@ void skills() {
   //go into matchload 2
   chassis.moveToPoint(90, 37, 1000,{.maxSpeed = 110});
   pros::delay(2000);
-  chassis.moveToPoint(50, 37, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(50, 37, 1000, {.forwards = false, .maxSpeed = 127});*/
+
+  // set up
+  wing.set_value(true);
+  hood.set_value(true);
+  chassis.setPose(0, 0, -90);
+  chassis.setBrakeMode(MOTOR_BRAKE_BRAKE);
+
+  // go to first match loader
+  chassis.moveToPoint(-27, 0, 800, {.maxSpeed = 127});
+  chassis.turnToHeading(-180, 800, {.maxSpeed = 127});
+  tongue.set_value(true);
+  intakeLoad();
+  chassis.moveToPoint(-26.5, -10, 800, {.maxSpeed = 127});
+  pros::delay(1000);
+
+  // go to next load
+  chassis.moveToPoint(-27, 0, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(-225, 800, {.maxSpeed = 127});
+  intakeHalt();
+  tongue.set_value(false);
+  chassis.moveToPoint(-41, 12.5, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(0, 800, {.maxSpeed = 127});
+  wing.set_value(false);
+  chassis.moveToPoint(-42, 82, 3000, {.maxSpeed = 127});
+  chassis.turnToHeading(45, 800, {.maxSpeed = 127});
+  chassis.moveToPoint(-29, 98, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(0, 800, {.maxSpeed = 127});
+  chassis.moveToPose(-30, 75, 0, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(-30, 70, 500, {.forwards = false, .maxSpeed = 127});
+  intakeLongGoal();
+  pros::delay(2000);
+  intakeLoad();
+  tongue.set_value(true);
+
+  // get 2nd match loader
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPose(1, 32, 0, 1500, {.maxSpeed = 127});
+  pros::delay(2000);
+  chassis.moveToPose(0, -13, 0, 1500, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(0, -15, 500, {.forwards = false, .maxSpeed = 127});
+  chassis.setPose(0, 0, 0);
+  intakeLongGoal();
+  pros::delay(2000);
+  tongue.set_value(false);
+
+  // get match barrier
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPoint(0, 12, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(90, 800, {.maxSpeed = 127});
+  chassis.moveToPoint(48, 12, 1500, {.maxSpeed = 127});
+  chassis.turnToHeading(0, 800, {.maxSpeed = 127});
+  chassis.moveToPoint(48, 20, 500, {.maxSpeed = 70});
+  chassis.moveToPoint(48, 32, 1000, {.minSpeed = 110});
+
+
+  
+  
   
 
 }
@@ -515,7 +573,7 @@ rd::Selector selector({{"Best auton", sawp},
                        {"Skills", skills}});*/
 void autonomous() {
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  rightelims();
+  skills();
   // selector.run_auton();
 }
 
