@@ -715,3 +715,175 @@ void opcontrol() {
     pros::delay(10);
   }
 }
+void skills() {
+  
+  // set up
+  wing.set_value(true);
+  hood.set_value(true);
+  chassis.setPose(0, 0, -90);
+  chassis.setBrakeMode(MOTOR_BRAKE_BRAKE);
+
+  // go to first match loader
+  chassis.moveToPoint(-26.5, 0, 800, {.maxSpeed = 127});
+  chassis.turnToHeading(-180, 600, {.maxSpeed = 127});
+  tongue.set_value(true);
+  //intakeLoad();
+  chassis.moveToPoint(-26.5, -12, 800, {.maxSpeed = 127});
+  pros::delay(1000);
+
+  // go to next load
+  chassis.moveToPoint(-27, 0, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(-225, 600, {.maxSpeed = 127});
+  intakeHalt();
+  tongue.set_value(false);
+  chassis.moveToPoint(-41, 12.5, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(0, 800, {.maxSpeed = 127});
+  wing.set_value(false);
+  chassis.moveToPoint(-42, 82, 3000, {.maxSpeed = 127});
+  chassis.turnToHeading(45, 600, {.maxSpeed = 127});
+  chassis.moveToPoint(-29, 98, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(0, 600, {.maxSpeed = 127});
+  chassis.moveToPose(-29.5, 75, 0, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(-29.5, 70, 500, {.forwards = false, .maxSpeed = 127});
+  //intakeLongGoal();
+  pros::delay(2000);
+  //intakeLoad();
+  tongue.set_value(true);
+
+  // get 2nd match loader
+  chassis.setPose(0, 0, 0);
+  chassis.moveToPose(1, 34, 0, 1500, {.maxSpeed = 127});
+  pros::delay(2000);
+  chassis.moveToPose(0, -13, 0, 1500, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(0, -15, 500, {.forwards = false, .maxSpeed = 127});
+  chassis.setPose(0, 0, 0);
+  //intakeLongGoal();
+  pros::delay(2000);
+  tongue.set_value(false);
+
+
+  // get match barrier
+  chassis.setPose(0, 0, 0);
+  //intakeLoad();
+  chassis.moveToPoint(0, 12, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(90, 650, {.maxSpeed = 127});
+  chassis.moveToPoint(49, 12, 1500, {.maxSpeed = 127});
+  chassis.turnToHeading(0, 650, {.maxSpeed = 127});
+  chassis.moveToPoint(47, 24, 1500, {.maxSpeed = 70});
+
+  // cross
+  chassis.moveToPoint(47, 30, 2000, {.minSpeed = 100});
+  chassis.moveToPoint(47, 33, 2000, {.maxSpeed = 110, .minSpeed = 90});
+  chassis.turnToHeading(15, 300);
+  chassis.turnToHeading(-15, 300);
+  chassis.turnToHeading(15, 300);
+  chassis.turnToHeading(-15, 300);
+  chassis.moveToPoint(47, 48, 1000, {.maxSpeed = 80});
+  chassis.turnToHeading(15, 300);
+  chassis.turnToHeading(-15, 300);
+  chassis.turnToHeading(15, 300);
+  chassis.turnToHeading(-15, 300);
+  chassis.moveToPoint(47, 45, 1000, {.maxSpeed = 70});
+  //chassis.setPose(0, 0, 0);
+
+  // reset after cross
+  //chassis.moveToPoint(-1, -30, 2000, {.forwards = false, .maxSpeed = 90});
+  //chassis.moveToPoint(-1, 0, 1000, {.maxSpeed = 60});
+  //chassis.setPose(0, 0, 0);
+
+  chassis.moveToPoint(47, 10, 2000, {.forwards = false, .maxSpeed = 110});
+  chassis.moveToPoint(47, 22, 1500, {.maxSpeed = 70});
+
+  // score on center
+  chassis.moveToPoint(47, -1, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(90, 650);
+  chassis.moveToPoint(75, 0, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(45, 650);
+  hood.set_value(false);
+  chassis.moveToPose(53.75, -20, 45, 1500, {.forwards = false, .lead = 0.2, .maxSpeed = 127});
+  //intakeCenterGoal();
+  //chassis.setPose(0, 0, 45);
+  pros::delay(2000);
+
+  // long goal reset
+  chassis.moveToPoint(94, 15, 1500, {.maxSpeed = 127});
+  chassis.turnToHeading(0, 650);
+  hood.set_value(true);
+  chassis.moveToPoint(95, -15, 1500, {.forwards = false, .maxSpeed = 90});
+  chassis.waitUntilDone();
+  
+
+  chassis.setPose(0, 0, 0);
+  intakeLoad();
+  tongue.set_value(true);
+
+  // get 3rd match loader
+  chassis.moveToPoint(-0.5, 34, 1500, {.maxSpeed = 127});
+  pros::delay(1500);
+  chassis.moveToPoint(-0.5, 34, 1500, {.maxSpeed = 127});
+  hood.set_value(true);
+  chassis.moveToPoint(-1, 14, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(-45, 650);
+  tongue.set_value(false);
+  intakeHalt();
+  chassis.moveToPoint(13, 1.5, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(180, 650);
+  chassis.moveToPoint(13.5, -65, 1500, {.maxSpeed = 127});
+  chassis.turnToHeading(225, 650);
+  chassis.moveToPoint(0, -80, 1000, {.maxSpeed = 127});
+  chassis.turnToHeading(180, 600);
+  chassis.moveToPose(0, -50, 180, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.waitUntilDone();
+  intakeLongGoal();
+  pros::delay(2000);
+  intakeLoad();
+
+  // get 4th match loader
+  chassis.setPose(0, 0, 0);
+  tongue.set_value(true);
+  chassis.moveToPose(1, 34, 0, 1500, {.maxSpeed = 127});
+  pros::delay(1500);
+  chassis.moveToPose(1, 34, 0, 1500, {.maxSpeed = 127});
+  chassis.moveToPose(0, -13, 0, 1500, {.forwards = false, .maxSpeed = 127});
+  chassis.moveToPoint(0, -15, 500, {.forwards = false, .maxSpeed = 127});
+  chassis.setPose(0, 0, 0);
+  intakeLongGoal();
+  pros::delay(2000);
+  tongue.set_value(false);
+
+  // park
+  chassis.setPose(0, 0, 0);
+  tongue.set_value(false);
+  chassis.moveToPoint(0, 23, 800);
+  chassis.turnToHeading(60, 600);
+  chassis.moveToPose(32, 34, 90, 1200, {.minSpeed = 70});
+  chassis.waitUntilDone();
+  tongue.set_value(true);
+  
+  //cross
+  intakeLoad();
+  chassis.moveToPoint(70, 34, 3000, {.maxSpeed = 95});
+  chassis.waitUntil(30);
+  tongue.set_value(false);
+
+
+
+
+  /*
+  chassis.moveToPoint(93, 34, 1000, {.maxSpeed = 90}); 
+  pros::delay(2000);
+
+  // go to 2nd long goal
+  chassis.moveToPoint(92, 16, 800, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(-45, 650);
+  tongue.set_value(false);
+  
+  chassis.moveToPoint(104, 0, 1000, {.forwards = false, .maxSpeed = 127});
+  chassis.turnToHeading(180, 650);
+  chassis.moveToPoint(104, -60, 2000, {.maxSpeed = 127});
+  chassis.turnToHeading(225, 650);
+  chassis.moveToPoint(95, -76, 800, {.maxSpeed = 127});
+  chassis.turnToHeading(180, 650);*/
+  
+
+}
